@@ -9,8 +9,8 @@ class Servers implements Serializable {
     }
 
     public void deploy(String id) {
-        script.unstash 'war'
-        script.sh "cp x.war /tmp/webapps/${id}.war"
+        script.unstash 'jar'
+        script.sh "cp jifu-platform-server-1.0.1-SNAPSHOT.jar /tmp/webapps/${id}.war"
     }
 
     public void undeploy(String id) {
