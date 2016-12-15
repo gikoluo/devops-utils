@@ -27,18 +27,16 @@ class Remote implements Serializable {
       cmd(playCmd)
     }
 
-    def deploy( Map conf ) {
-      deploy( conf.playbook, conf.file, [] )
-    }
+    // def deploy( Map conf ) {
+    //   deploy( conf.playbook, conf.file, [] )
+    // }
 
-    def deploy( String playbook, String file, String[] tags=[]) {
+    def deploy( String playbook, String file, String tag]) {
       script.echo "deploy ${f} to ${to} with playbook ${playbook} tagged by ${tag} ."
 
       def filename = f.substring(f.lastIndexOf("/") + 1, f.length());
 
       script.echo "filename is ${filename}."
-
-      tag = tags.join()
 
       script.sshagent (credentials: ["ansible-${inventory}"]) {
         //remote = new Remote(script, "ansible-${inventory}", remoteUser)
