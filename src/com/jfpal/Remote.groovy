@@ -26,4 +26,29 @@ class Remote implements Serializable {
       def playCmd = "cd ~/rhasta/ && ansible-playbook ${playbook}.yml -i ${inventory} ${extra}"
       cmd(playCmd)
     }
+
+    def deploy = { String playbook, String inventory, String file, String[] tag=[],  ->
+      script.echo "deploy ${f} to ${to} with playbook ${playbook} tagged by ${tag} ."
+
+      def filename = f.substring(f.lastIndexOf("/") + 1, f.length());
+
+      script.echo "filename is ${filename}."
+
+      script.sshagent (credentials: ["ansible-${inventory}"]) {
+        //remote = new Remote(script, "ansible-${inventory}", remoteUser)
+        cmd('whoami')
+        cmd('/usr/sbin/ip a')
+        def id = UUID.randomUUID().toString()
+
+        cmd "mkdir -p /tmp/${playbook}/"
+
+        dir("/tmp/${playbook}/") {
+          deleteDir()
+          unstash 'targetArchive'
+
+          scp(f, "/tmp/${playbook}/${id}.${filename}")
+        }
+        play(playbook, to, "--tags ${tag} -e BUILD_ID=${BUILD_ID} -e local_file=/tmp/${playbook}/${id}.${filename}")
+      }
+    }
 }
