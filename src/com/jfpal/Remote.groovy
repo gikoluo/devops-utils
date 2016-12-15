@@ -27,7 +27,7 @@ class Remote implements Serializable {
       cmd(playCmd)
     }
 
-    def deploy = { def playbook, def inventory, def file, def[] tag=[] ->
+    def deploy( String playbook, String inventory, String file, String[] tag=[]) {
       script.echo "deploy ${f} to ${to} with playbook ${playbook} tagged by ${tag} ."
 
       def filename = f.substring(f.lastIndexOf("/") + 1, f.length());
