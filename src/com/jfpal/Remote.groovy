@@ -56,9 +56,10 @@ class Remote implements Serializable {
         if (tag.size() > 0) {
           extraString += " --tags ${tag}"
         }
-        if (script.params.get("BUILD_ID", "").size() > 0) {
-          extraString += " -e BUILD_ID=${script.BUILD_ID}"
-        }
+        def BUILD_ID = "0"
+        // if (script.params.get("BUILD_ID", "").size() > 0) {
+        //   extraString += " -e BUILD_ID=${script.BUILD_ID}"
+        // }
         play(playbook, extraString)
       }
     }
