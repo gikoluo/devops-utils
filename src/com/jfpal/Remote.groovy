@@ -3,35 +3,35 @@ package com.jfpal
 
 class Remote implements Serializable {
     def script
-    def host
+    def inventory
     def user
     Remote() {}
 
-    Remote(script, host, user) {
+    Remote(script, inventory, user) {
 
         this.script = script
-        this.host = host
+        this.inventory = inventory
         this.user = user
     }
 
     public String cmd(String cmd) {
-      script.sh "ssh -o StrictHostKeyChecking=no -l ${user} ${host} '${cmd}' "
+      script.sh "ssh -o StrictHostKeyChecking=no -l ${user} ansible-${inventory} '${cmd}' "
     }
 
     public scp(String src, String dest) {
-      script.sh "scp '${src}' '${user}'@'${host}':${dest}"
+      script.sh "scp '${src}' '${user}'@'ansible-${inventory}':${dest}"
     }
 
-    public play(def playbook, def inventory, def extra) {
+    public play(def playbook, def extra) {
       def playCmd = "cd ~/rhasta/ && ansible-playbook ${playbook}.yml -i ${inventory} ${extra}"
       cmd(playCmd)
     }
 
     def deploy( Map conf ) {
-      deploy( conf.playbook, conf.inventory, conf.file, conf.get("tags", []) )
+      deploy( conf.playbook, conf.file, conf.get("tags", []) )
     }
 
-    def deploy( String playbook, String inventory, String file, String[] tags=[]) {
+    def deploy( String playbook, String file, String[] tags=[]) {
       script.echo "deploy ${f} to ${to} with playbook ${playbook} tagged by ${tag} ."
 
       def filename = f.substring(f.lastIndexOf("/") + 1, f.length());
