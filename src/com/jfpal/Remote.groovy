@@ -52,7 +52,7 @@ class Remote implements Serializable {
           deleteDir()
           unstash 'targetArchive'
 
-          scp(f, "/tmp/${playbook}/${id}.${filename}")
+          //scp(f, "/tmp/${playbook}/${id}.${filename}")
         }
         play(playbook, to, "--tags ${tag} -e BUILD_ID=${BUILD_ID} -e local_file=/tmp/${playbook}/${id}.${filename}")
       }
