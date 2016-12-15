@@ -23,7 +23,7 @@ class Utilities implements Serializable  {
 
     /* Call maven tool with java envVars. */
     steps.withEnv(javaEnv) {
-        if (isUnix()) {
+        if (steps.isUnix()) {
           steps.sh "${mvnHome}/bin/mvn ${args}"
         } else {
           steps.bat "${mvnHome}\\bin\\mvn ${args}"
