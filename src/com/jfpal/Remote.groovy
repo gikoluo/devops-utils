@@ -52,7 +52,7 @@ class Remote implements Serializable {
 
           //scp(f, "/tmp/${playbook}/${id}.${filename}")
         }
-        extraString = "-e BUILD_ID=${BUILD_ID} -e local_file=/tmp/${playbook}/${id}.${filename}"
+        extraString = "-e BUILD_ID=${script.BUILD_ID} -e local_file=/tmp/${playbook}/${id}.${filename}"
         if (tag.length > 0) {
           extraString += "--tags ${tag}"
         }
