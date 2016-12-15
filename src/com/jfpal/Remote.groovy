@@ -50,7 +50,7 @@ class Remote implements Serializable {
           script.deleteDir()
           script.unstash 'targetArchive'
 
-          //scp(f, "/tmp/${playbook}/${id}.${filename}")
+          scp(f, "/tmp/${playbook}/${id}.${filename}")
         }
         def extraString = " -e local_file=/tmp/${playbook}/${id}.${filename}"
         if (tag.size() > 0) {
