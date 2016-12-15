@@ -31,7 +31,7 @@ class Remote implements Serializable {
     //   deploy( conf.playbook, conf.file, [] )
     // }
 
-    def deploy( String playbook, String file, String tag]) {
+    def deploy( String playbook, String file, String tag) {
       script.echo "deploy ${f} to ${to} with playbook ${playbook} tagged by ${tag} ."
 
       def filename = f.substring(f.lastIndexOf("/") + 1, f.length());
