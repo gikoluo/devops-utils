@@ -14,15 +14,15 @@ class Remote implements Serializable {
         this.user = user
     }
 
-    public String cmd(String cmd) {
+    def cmd (String cmd) {
       script.sh "ssh -o StrictHostKeyChecking=no -l ${user} ansible-${inventory} '${cmd}' "
     }
 
-    public scp(String src, String dest) {
+    def scp(String src, String dest) {
       script.sh "scp '${src}' '${user}'@'ansible-${inventory}':${dest}"
     }
 
-    public play(def playbook, def extra) {
+    def play(String playbook, String extra) {
       def playCmd = "cd ~/rhasta/ && ansible-playbook ${playbook}.yml -i ${inventory} ${extra}"
       cmd(playCmd)
     }
