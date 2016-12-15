@@ -46,13 +46,17 @@ class Remote implements Serializable {
 
         cmd "mkdir -p /tmp/${playbook}/"
 
-        dir("/tmp/${playbook}/") {
-          deleteDir()
-          unstash 'targetArchive'
+        script.dir("/tmp/${playbook}/") {
+          script.deleteDir()
+          script.unstash 'targetArchive'
 
           //scp(f, "/tmp/${playbook}/${id}.${filename}")
         }
-        play(playbook, to, "--tags ${tag} -e BUILD_ID=${BUILD_ID} -e local_file=/tmp/${playbook}/${id}.${filename}")
+        extraString = "-e BUILD_ID=${BUILD_ID} -e local_file=/tmp/${playbook}/${id}.${filename}"
+        if (tag.length > 0) {
+          extraString += "--tags ${tag}"
+        }
+        play(playbook, extraString)
       }
     }
 }
