@@ -28,7 +28,7 @@ class Remote implements Serializable {
     }
 
     def deploy( Map conf ) {
-      deploy conf.playbook conf.inventory, conf.file, conf.get("tags", [])
+      deploy( conf.playbook, conf.inventory, conf.file, conf.get("tags", []) )
     }
 
     def deploy( String playbook, String inventory, String file, String[] tags=[]) {
