@@ -53,10 +53,10 @@ class Remote implements Serializable {
           //scp(f, "/tmp/${playbook}/${id}.${filename}")
         }
         def extraString = " -e local_file=/tmp/${playbook}/${id}.${filename}"
-        if (tag.length > 0) {
+        if (tag.size() > 0) {
           extraString += " --tags ${tag}"
         }
-        if (script.get("BUILD_ID", "").length > 0) {
+        if (script.get("BUILD_ID", "").size() > 0) {
           extraString += " -e BUILD_ID=${script.BUILD_ID}"
         }
         play(playbook, extraString)
