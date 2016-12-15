@@ -1,9 +1,12 @@
 package com.jfpal
 
 
-class Utilities {
+class Utilities implements Serializable  {
   def steps
-  Utilities(steps) {this.steps = steps}
+  Utilities(steps) {
+    this.steps = steps
+  }
+  
   def mvn(def args) {
     /* Get jdk tool. */
 
