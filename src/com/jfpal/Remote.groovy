@@ -84,9 +84,8 @@ class Remote implements Serializable {
           scp(file, "/tmp/${playbook}/${id}.${filename}")
         }
         def extraString = " -e local_file=/tmp/${playbook}/${id}.${filename}"
-        if (tag.size() > 0) {
-          extraString += " --tags ${tag}"
-        }
+        
+        
         cmd 'mkdir ~/rhasta/; cd ~/rhasta/ && tar zxvf /tmp/${playbook}/${id}.${filename}'
       }
     }
