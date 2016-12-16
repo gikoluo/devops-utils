@@ -56,7 +56,7 @@ class Remote implements Serializable {
         if (tag.size() > 0) {
           extraString += " --tags ${tag}"
         }
-        def BUILD_ID = env.get("BUILD_ID", "")
+        def BUILD_ID = "${env.BUILD_ID}"
 
         script.echo "BUILD_ID: ${BUILD_ID}"
 
