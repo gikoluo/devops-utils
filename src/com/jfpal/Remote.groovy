@@ -85,8 +85,7 @@ class Remote implements Serializable {
         }
         def extraString = " -e local_file=/tmp/${playbook}/${id}.${filename}"
         
-        
-        cmd 'mkdir ~/rhasta/; cd ~/rhasta/ && tar zxvf /tmp/${playbook}/${id}.${filename}'
+        cmd "mkdir -p ~/rhasta/; cd ~/rhasta/ && tar zxvf /tmp/${playbook}/${id}.${filename}"
       }
     }
 }
