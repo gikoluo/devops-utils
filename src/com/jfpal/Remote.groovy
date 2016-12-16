@@ -5,13 +5,16 @@ class Remote implements Serializable {
     def script
     def inventory
     def user
+    def BUILD_ID
+
     Remote() {}
 
-    Remote(script, inventory, user) {
+    Remote(script, inventory, user, BUILD_ID=0) {
 
         this.script = script
         this.inventory = inventory
         this.user = user
+        this.BUILD_ID = BUILD_ID
     }
 
     def cmd (String cmd) {
@@ -58,13 +61,10 @@ class Remote implements Serializable {
         }
         //def BUILD_ID = "${script.env.BUILD_ID}"
 
-        if ( ! isNull(BUILD_ID) ){
-          if (BUILD_ID.size() > 0) {
-            extraString += " -e BUILD_ID=${BUILD_ID}"
-          }
-        }
+        extraString += " -e BUILD_ID=${BUILD_ID}"
         script.echo "BUILD_ID: ${BUILD_ID}"
-        
+
+
         play(playbook, extraString)
       }
     }
