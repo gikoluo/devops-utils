@@ -5,16 +5,14 @@ class Remote implements Serializable {
     def script
     def inventory
     def user
-    def BUILD_ID
 
     Remote() {}
 
-    Remote(script, inventory, user, BUILD_ID=0) {
+    Remote(script, inventory, user) {
 
         this.script = script
         this.inventory = inventory
         this.user = user
-        this.BUILD_ID = BUILD_ID
     }
 
     def cmd (String cmd) {
@@ -34,7 +32,7 @@ class Remote implements Serializable {
     //   deploy( conf.playbook, conf.file, [] )
     // }
 
-    def deploy( String playbook, String file, String tag="" ) {
+    def deploy( String playbook, String file, String BUILD_ID="0", String tag="" ) {
       script.echo "deploy ${file} to ${inventory} with playbook ${playbook} tagged by ${tag} ."
 
       def filename = file.substring(file.lastIndexOf("/") + 1, file.length());
@@ -59,8 +57,6 @@ class Remote implements Serializable {
         if (tag.size() > 0) {
           extraString += " --tags ${tag}"
         }
-        //def BUILD_ID = "${script.env.BUILD_ID}"
-
         extraString += " -e BUILD_ID=${BUILD_ID}"
         script.echo "BUILD_ID: ${BUILD_ID}"
 
