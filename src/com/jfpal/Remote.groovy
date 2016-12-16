@@ -67,23 +67,27 @@ class Remote implements Serializable {
     def deployAnsible( String file ) {
       script.echo "deploy ${file} to ${inventory} without playbook."
       def playbook = "ansible"
-      def filename = file.substring(file.lastIndexOf("/") + 1, file.length());
-      cmd('whoami')
-      cmd('/usr/sbin/ip a')
-      def id = UUID.randomUUID().toString()
 
-      cmd "mkdir -p /tmp/${playbook}/"
+      script.sshagent (credentials: ["ansible-${inventory}"]) {
 
-      script.dir("/tmp/${playbook}/") {
-        script.deleteDir()
-        script.unstash 'targetArchive'
+        def filename = file.substring(file.lastIndexOf("/") + 1, file.length());
+        cmd('whoami')
+        cmd('/usr/sbin/ip a')
+        def id = UUID.randomUUID().toString()
 
-        scp(file, "/tmp/${playbook}/${id}.${filename}")
+        cmd "mkdir -p /tmp/${playbook}/"
+
+        script.dir("/tmp/${playbook}/") {
+          script.deleteDir()
+          script.unstash 'targetArchive'
+
+          scp(file, "/tmp/${playbook}/${id}.${filename}")
+        }
+        def extraString = " -e local_file=/tmp/${playbook}/${id}.${filename}"
+        if (tag.size() > 0) {
+          extraString += " --tags ${tag}"
+        }
+        cmd 'mkdir ~/rhasta/; cd ~/rhasta/ && tar zxvf /tmp/${playbook}/${id}.${filename}'
       }
-      def extraString = " -e local_file=/tmp/${playbook}/${id}.${filename}"
-      if (tag.size() > 0) {
-        extraString += " --tags ${tag}"
-      }
-      cmd 'mkdir ~/rhasta/; cd ~/rhasta/ && tar zxvf /tmp/${playbook}/${id}.${filename}'
     }
 }
