@@ -67,7 +67,7 @@ class Remote implements Serializable {
     def deployAnsible( String file ) {
       script.echo "deploy ${file} to ${inventory} without playbook."
       def playbook = "ansible"
-      filename = file.substring(file.lastIndexOf("/") + 1, file.length());
+      def filename = file.substring(file.lastIndexOf("/") + 1, file.length());
       cmd('whoami')
       cmd('/usr/sbin/ip a')
       def id = UUID.randomUUID().toString()
