@@ -23,7 +23,7 @@ class Utilities implements Serializable  {
   }
 
   def qaCheck() {
-    parallel( 'quality scan': {
+    steps.parallel( 'quality scan': {
         
     },
     'integration tests': {
