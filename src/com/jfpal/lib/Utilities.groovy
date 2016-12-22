@@ -10,7 +10,7 @@ class Utilities implements Serializable  {
 
   def copyTarget(buildProjectName, targetFile, archive=true) {
     steps.with {
-      node {
+      
         dir(".") {
           step([$class: 'hudson.plugins.copyartifact.CopyArtifact',
              filter: targetFile, 
@@ -22,7 +22,6 @@ class Utilities implements Serializable  {
           }
           stash name:'targetArchive', includes: targetFile
         }
-      }
     }
   }
 
