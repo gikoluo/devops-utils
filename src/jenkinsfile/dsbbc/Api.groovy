@@ -7,7 +7,7 @@ import com.jfpal.lib.Remote
 
 def utils = new Utilities(steps)
 def playbook = "dsbbc/bbcapi"
-def buildProjectName = "builds/API"
+def buildProjectName = "builds/Api"
 def targetFile = 'jifu-platform-server/target/jifu-platform-server-1.0.1-SNAPSHOT.jar'
 def archivePublisher = true
 
