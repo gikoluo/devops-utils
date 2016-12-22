@@ -27,7 +27,7 @@ stage('Dev') {
                  fingerprintArtifacts: true, 
                  projectName: buildProjectName
             ])
-            if ( needArchive ) {
+            if ( archivePublisher ) {
                 archiveArtifacts artifacts:targetFile, fingerprint: true
             }
             stash name:'targetArchive', includes: targetFile
