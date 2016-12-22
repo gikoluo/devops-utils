@@ -1,4 +1,4 @@
-package com.jfpal
+package com.jfpal.lib
 
 
 class Utilities implements Serializable  {
