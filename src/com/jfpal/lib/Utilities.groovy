@@ -8,7 +8,7 @@ class Utilities implements Serializable  {
     this.steps = steps
   }
 
-  def copyTarget(buildProjectName, targetFile, needArchive) {
+  def copyTarget(buildProjectName, targetFile, archive=true) {
     node {
       dir(".") {
         steps.step([$class: 'hudson.plugins.copyartifact.CopyArtifact',
@@ -16,7 +16,7 @@ class Utilities implements Serializable  {
              fingerprintArtifacts: true, 
              projectName: buildProjectName
         ])
-        if ( needArchive ) {
+        if ( archive ) {
             steps.archiveArtifacts artifacts:targetFile, fingerprint: true
         }
         steps.stash name:'targetArchive', includes: targetFile
