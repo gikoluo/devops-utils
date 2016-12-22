@@ -6,9 +6,10 @@ import com.jfpal.lib.Utilities
 import com.jfpal.lib.Remote
 
 def utils = new Utilities(steps)
-def playbook = "dsbbc/bbcapi"
+def playbook = "dsbbc/bbcweb"
 def buildProjectName = "builds/Backend"
 def targetFile = 'target/app.war'
+def tags = ["update"]
 def archivePublisher = true
 
 def testLinks = [
@@ -17,6 +18,7 @@ def testLinks = [
   "prod": "https://bbc.91dbq.com:8443/be/"
 ]
 
+tags << "backend"
 
 milestone 1
 stage('Dev') {
@@ -65,7 +67,7 @@ milestone 3
 stage('Test') {
     node {
         remote = new Remote(steps, 'test')
-        remote.deploy (playbook, targetFile, BUILD_ID, 'update')
+        remote.deploy (playbook, targetFile, BUILD_ID, tags)
     }
 }
 
@@ -78,7 +80,7 @@ stage('UAT') {
         node {
             echo 'UAT deploy start'
             remote = new Remote(steps, 'uat')
-            remote.deploy (playbook, targetFile, BUILD_ID, 'update')
+            remote.deploy (playbook, targetFile, BUILD_ID, tags)
         }
     }
     timeout(time:1, unit:'DAYS') {
@@ -96,7 +98,7 @@ stage ('Production') {
         node {
             echo 'Production deploy status'
             remote = new Remote(steps, 'prod')
-            remote.deploy (playbook, targetFile, BUILD_ID, 'update')
+            remote.deploy (playbook, targetFile, BUILD_ID, tags)
             echo "Production deployed"
         }
     }

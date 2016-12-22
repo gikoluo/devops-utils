@@ -32,8 +32,8 @@ class Remote implements Serializable {
     //   deploy( conf.playbook, conf.file, [] )
     // }
 
-    def deploy( String playbook, String file, String BUILD_ID="0", String tag="" ) {
-      script.echo "deploy ${file} to ${inventory} with playbook ${playbook} tagged by ${tag} ."
+    def deploy( String playbook, String file, String BUILD_ID="0", String tags=[] ) {
+      script.echo "deploy ${file} to ${inventory} with playbook ${playbook} tagged by ${tags} ."
 
       def filename = file.substring(file.lastIndexOf("/") + 1, file.length());
 
@@ -54,12 +54,11 @@ class Remote implements Serializable {
           scp(file, "/tmp/${playbook}/${id}.${filename}")
         }
         def extraString = " -e local_file=/tmp/${playbook}/${id}.${filename}"
-        if (tag.size() > 0) {
-          extraString += " --tags ${tag}"
+        if (tags.size() > 0) {
+          extraString += " --tags ${tags.join(',')}"
         }
         extraString += " -e BUILD_ID=${BUILD_ID}"
         script.echo "BUILD_ID: ${BUILD_ID}"
-
 
         play(playbook, extraString)
       }
