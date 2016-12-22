@@ -9,17 +9,19 @@ class Utilities implements Serializable  {
   }
 
   def copyTarget(buildProjectName, targetFile, archive=true) {
-    node {
-      dir(".") {
-        steps.step([$class: 'hudson.plugins.copyartifact.CopyArtifact',
+    steps.with {
+      node {
+        dir(".") {
+          step([$class: 'hudson.plugins.copyartifact.CopyArtifact',
              filter: targetFile, 
              fingerprintArtifacts: true, 
              projectName: buildProjectName
-        ])
-        if ( archive ) {
-            steps.archiveArtifacts artifacts:targetFile, fingerprint: true
+          ])
+          if ( archive ) {
+            archiveArtifacts artifacts:targetFile, fingerprint: true
+          }
+          stash name:'targetArchive', includes: targetFile
         }
-        steps.stash name:'targetArchive', includes: targetFile
       }
     }
   }
