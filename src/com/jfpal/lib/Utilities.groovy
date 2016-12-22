@@ -11,7 +11,7 @@ class Utilities implements Serializable  {
   def copyTarget(buildProjectName, targetFile, archive=true) {
     steps.with {
       
-        dir(".") {
+        steps.dir(".") {
           step([$class: 'hudson.plugins.copyartifact.CopyArtifact',
              filter: targetFile, 
              fingerprintArtifacts: true, 
