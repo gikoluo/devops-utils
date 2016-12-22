@@ -35,7 +35,7 @@ milestone 3
 stage('Test') {
     node {
         remote = new Remote(steps, 'test')
-        remote.deploy (playbook, targetFile, BUILD_ID, 'update')
+        remote.deploy (playbook, targetFile, BUILD_ID)
     }
 }
 
@@ -48,7 +48,7 @@ stage('UAT') {
         node {
             echo 'UAT deploy start'
             remote = new Remote(steps, 'uat')
-            remote.deploy (playbook, targetFile, BUILD_ID, 'update')
+            remote.deploy (playbook, targetFile, BUILD_ID)
         }
     }
     timeout(time:1, unit:'DAYS') {
@@ -66,7 +66,7 @@ stage ('Production') {
         node {
             echo 'Production deploy status'
             remote = new Remote(steps, 'prod')
-            remote.deploy (playbook, targetFile, BUILD_ID, 'update')
+            remote.deploy (playbook, targetFile, BUILD_ID)
             echo "Production deployed"
         }
     }
