@@ -7,7 +7,42 @@ class Utilities implements Serializable  {
   Utilities(steps) {
     this.steps = steps
   }
-  
+
+  def copyTarget(buildProjectName, targetFile, needArchive) {
+    node {
+      dir(".") {
+        steps.step([$class: 'hudson.plugins.copyartifact.CopyArtifact',
+             filter: targetFile, 
+             fingerprintArtifacts: true, 
+             projectName: buildProjectName
+        ])
+        if ( needArchive ) {
+            steps.archiveArtifacts artifacts:targetFile, fingerprint: true
+        }
+        steps.stash name:'targetArchive', includes: targetFile
+      }
+    }
+  }
+
+  def qaCheck() {
+    parallel( 'quality scan': {
+        
+    },
+    'integration tests': {
+        
+    }, 'functional-tests': {
+    /*
+        node('selenium'){ 
+        }
+    */
+    }, 'codecheck': {
+    /*
+        node('selenium'){
+        }
+    */
+    })
+  }
+
   // This method sets up the Maven and JDK tools, puts them in the environment along
   // with whatever other arbitrary environment variables we passed in, and runs the
   // body we passed in within that environment.

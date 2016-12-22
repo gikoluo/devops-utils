@@ -19,46 +19,14 @@ def testLinks = [
 
 
 milestone 1
-stage('Dev') {
-    node {
-        dir(".") {
-            step([$class: 'hudson.plugins.copyartifact.CopyArtifact',
-                 filter: targetFile, 
-                 fingerprintArtifacts: true, 
-                 projectName: buildProjectName
-            ])
-            if ( needArchive ) {
-                archiveArtifacts artifacts:targetFile, fingerprint: true
-            }
-            stash name:'targetArchive', includes: targetFile
-        }
-    }
+stage('Copy Target') {
+  utils.copyTarget(buildProjectName, targetFile, needArchive)
 }
 
 
 milestone 2
 stage('QA') {
-
-    parallel( 'quality scan': {
-        
-    },
-    'integration tests': {
-        
-    }, 'functional-tests': {
-    /*
-        node('selenium'){ 
-        }
-    */
-    }, 'codecheck': {
-    /*
-        node('selenium'){
-        }
-    */
-    })
-    
-    /*
-    parallel 'quality scan': { node {sh 'mvn sonar:sonar'} }, 'integration test': { node {sh 'mvn verify'} }
-    */
+    utils.qaCheck()
 }
 
 milestone 3
