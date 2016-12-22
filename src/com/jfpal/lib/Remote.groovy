@@ -8,7 +8,7 @@ class Remote implements Serializable {
 
     Remote() {}
 
-    Remote(script, inventory, user) {
+    Remote(script, inventory, user="ops") {
 
         this.script = script
         this.inventory = inventory
