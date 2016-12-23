@@ -6,7 +6,7 @@ import com.jfpal.lib.Utilities
 import com.jfpal.lib.Remote
 
 def utils = new Utilities(steps)
-def playbook = "dspay/biz"
+def playbook = "dspay/bizapi"
 def buildProjectName = "DSPAY/builds/apicombine"
 def targetFile = "ds-biz-1.0.tar.gz"
 def archivePublisher = true
