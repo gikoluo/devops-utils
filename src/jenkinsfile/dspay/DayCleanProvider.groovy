@@ -6,9 +6,9 @@ import com.jfpal.lib.Utilities
 import com.jfpal.lib.Remote
 
 def utils = new Utilities(steps)
-def playbook = "dspay/dsnotice"
-def buildProjectName = "DSPAY/builds/dsnoticecombile"
-def targetFile = "dsnotice-1.0.tar.gz"
+def playbook = "dsdayclean/dayclean"
+def buildProjectName = "day-clean/builds/day-clean-combine"
+def targetFile = "day-clean-provider-1.0.tar.gz"
 def archivePublisher = true
 
 def testLinks = [
