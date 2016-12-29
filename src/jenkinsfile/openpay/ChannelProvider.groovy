@@ -6,9 +6,9 @@ import com.jfpal.lib.Utilities
 import com.jfpal.lib.Remote
 
 def utils = new Utilities(steps)
-def playbook = "openpay/cotton-candy-file-provider"
+def playbook = "openpay/cotton-candy-channel-provider"
 def buildProjectName = "OPEN_PAY/builds/candy"
-def targetFile = "cotton-candy/cotton-candy-file-provider/target/cotton-candy-file-provider-1.0.tar.gz"
+def targetFile = "cotton-candy/cotton-candy-channel-provider/target/cotton-candy-channel-provider-1.0.tar.gz"
 def archivePublisher = true
 
 def testLinks = [
