@@ -13,11 +13,13 @@ def projectName = env.PROJECT_NAME
 def serviceName = env.SERVICE_NAME
 def targetFile = env.TARGET_FILE
 
-echo build.environment.get("PROJECT_NAME")
-echo build.buildVariableResolver.resolve("PROJECT_NAME")
 
+echo "${projectName}"
 
-def playbook = build.environment.get("PLAYBOOK", "${projectName}/${serviceName}")
+// echo build.environment.get("PROJECT_NAME")
+// echo build.buildVariableResolver.resolve("PROJECT_NAME")
+
+def playbook = env.get("PLAYBOOK", "${projectName}/${serviceName}")
 
 //def playbook = "${projectName}/${serviceName}"
 def buildJob = "${projectName}/builds/${serviceName}_all"
