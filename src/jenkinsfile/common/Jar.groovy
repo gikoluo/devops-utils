@@ -13,6 +13,7 @@ def projectName = env.PROJECT_NAME
 def serviceName = env.SERVICE_NAME
 def targetFile = env.TARGET_FILE
 
+def notdefined = env.NOTDEFINED
 
 echo "${projectName}"
 
