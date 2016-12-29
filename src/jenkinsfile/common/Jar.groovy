@@ -9,7 +9,6 @@ import com.jfpal.lib.Remote
 def utils = new Utilities(steps)
 
 
-sh "echo 'Deploying to ${DeployEnvironment.toLowerCase()}.example.com'"
 def projectName = env.PROJECT_NAME
 def serviceName = env.SERVICE_NAME
 def targetFile = env.TARGET_FILE
