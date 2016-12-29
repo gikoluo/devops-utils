@@ -38,7 +38,7 @@ def testLinks = [
 milestone 1
 stage('Copy Target') {
     node {
-        utils.copyTarget(buildProjectName, targetFile, archivePublisher)
+        utils.copyTarget(buildJob, targetFile, archivePublisher)
     }
 }
 
