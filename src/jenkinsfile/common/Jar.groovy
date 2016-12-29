@@ -11,9 +11,12 @@ def utils = new Utilities(steps)
 
 def projectName = env.PROJECT_NAME
 def serviceName = env.SERVICE_NAME
+
+
+def buildJob = env.BUILD_JOB
+
 def targetFile = env.TARGET_FILE
 
-def notdefined = env.NOTDEFINED
 
 echo "${projectName}"
 
@@ -23,7 +26,7 @@ echo "${projectName}"
 def playbook = "${projectName}/${serviceName}"
 
 //def playbook = "${projectName}/${serviceName}"
-def buildJob = "${projectName}/builds/${serviceName}_all"
+
 //def playbook = "openpay/cotton-candy-channel-provider"
 //def buildProjectName = "OPEN_PAY/builds/candy"
 //def targetFile = "cotton-candy/cotton-candy-channel-provider/target/cotton-candy-channel-provider-1.0.tar.gz"
