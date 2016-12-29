@@ -23,13 +23,16 @@ echo "${projectName}"
 // echo build.environment.get("PROJECT_NAME")
 // echo build.buildVariableResolver.resolve("PROJECT_NAME")
 
-def playbook = "${projectName}/${serviceName}"
+def playbook = "";
 
-//def playbook = "${projectName}/${serviceName}"
+if(env.PLAYBOOK) {
+    playbook = env.PLAYBOOK
+}
+else {
+    playbook = "${projectName}/${serviceName}"
+}
 
-//def playbook = "openpay/cotton-candy-channel-provider"
-//def buildProjectName = "OPEN_PAY/builds/candy"
-//def targetFile = "cotton-candy/cotton-candy-channel-provider/target/cotton-candy-channel-provider-1.0.tar.gz"
+
 def archivePublisher = true
 
 def testLinks = [
