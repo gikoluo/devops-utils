@@ -7,7 +7,7 @@ import com.jfpal.lib.Remote
 
 def utils = new Utilities(steps)
 def playbook = "dspay/dsmanage"
-def buildProjectName = "DSPAY/builds/dsmanagecombile"
+def buildProjectName = "DSPAY/builds/manage_all"
 def targetFile = "DSManage-0.0.1-SNAPSHOT.war"
 def archivePublisher = true
 
