@@ -22,18 +22,8 @@ tags << "backend"
 
 milestone 1
 stage('Dev') {
-    node {
-        dir(".") {
-            step([$class: 'hudson.plugins.copyartifact.CopyArtifact',
-                 filter: targetFile, 
-                 fingerprintArtifacts: true, 
-                 projectName: buildProjectName
-            ])
-            if ( archivePublisher ) {
-                archiveArtifacts artifacts:targetFile, fingerprint: true
-            }
-            stash name:'targetArchive', includes: targetFile
-        }
+    node('master') {
+        utils.copyTarget(buildProjectName, targetFile, archivePublisher)
     }
 }
 
@@ -65,10 +55,12 @@ stage('QA') {
 
 milestone 3
 stage('Test') {
-    node {
+
+    node("ansible-test") {
         remote = new Remote(steps, 'test')
-        remote.deploy (playbook, targetFile, BUILD_ID, tags)
+        remote.deploy (playbook, targetFile, BUILD_ID)
     }
+
 }
 
 milestone 4
@@ -77,7 +69,7 @@ stage('UAT') {
         input message: "Test环境 ${testLinks.get('test', '')} 正常了么？可以提交 UAT 了吗?", ok: '准备好了，发布！', submitter: 'qa'
     }
     lock(resource: "${playbook}-staging-server", inversePrecedence: true) {
-        node {
+        node("ansible-uat") {
             echo 'UAT deploy start'
             remote = new Remote(steps, 'uat')
             remote.deploy (playbook, targetFile, BUILD_ID, tags)
@@ -95,7 +87,7 @@ stage ('Production') {
         input message: "可以提交 Prod 了吗?", ok: '准备好了，发布！', submitter: 'qa'
     }
     lock(resource: "${playbook}-production-server", inversePrecedence: true) {
-        node {
+        node("ansible-prod") {
             echo 'Production deploy status'
             remote = new Remote(steps, 'prod')
             remote.deploy (playbook, targetFile, BUILD_ID, tags)
