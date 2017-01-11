@@ -51,7 +51,7 @@ stage('Copy Target') {
     if(autoBuild) {
         build job: buildJob
     }
-    node {
+    node('master') {
         utils.copyTarget(buildJob, targetFile, archivePublisher)
     }
 }
