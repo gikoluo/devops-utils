@@ -41,6 +41,12 @@ class Remote implements Serializable {
 
       def extraString = " -e TARGET_FILE=/tmp/${playbook}/${id}/${file}"
 
+      if (tags.size() > 0) {
+        extraString += " --tags ${tags.join(',')}"
+      }
+      extraString += " -e BUILD_ID=${BUILD_ID}"
+
+
       script.echo "BUILD_ID: ${BUILD_ID}"
 
       play(playbook, extraString)
