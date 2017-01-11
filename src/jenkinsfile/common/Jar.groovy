@@ -48,6 +48,9 @@ def testLinks = [
 
 milestone 1
 stage('Copy Target') {
+    if(autoBuild) {
+        build job: buildJob
+    }
     node {
         utils.copyTarget(buildJob, targetFile, archivePublisher)
     }

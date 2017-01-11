@@ -14,25 +14,30 @@ remoteUser="ops"
 test_url = ""
 uat_url = ""
 prod_url = ""
-
+def autoBuild = true
 
 milestone 1
 stage('Dev') {
     node {
+        if(autoBuild) {
+            build job: buildProjectName
+        }
+        utils.copyTarget(buildProjectName, targetFile, true)
+
         //checkout scm
         //utils.ant 'tar'
 
-        step([$class: 'hudson.plugins.copyartifact.CopyArtifact',
-                 filter: targetFile, 
-                 fingerprintArtifacts: true, 
-                 projectName: buildProjectName
-            ])
+        // step([$class: 'hudson.plugins.copyartifact.CopyArtifact',
+        //          filter: targetFile, 
+        //          fingerprintArtifacts: true, 
+        //          projectName: buildProjectName
+        //     ])
 
 
-        dir(".") {
-            archiveArtifacts artifacts:targetFile, fingerprint: true
-            stash name:'targetArchive', includes:targetFile
-        }
+        // dir(".") {
+        //     archiveArtifacts artifacts:targetFile, fingerprint: true
+        //     stash name:'targetArchive', includes:targetFile
+        // }
     }
 }
 
