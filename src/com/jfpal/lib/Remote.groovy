@@ -103,7 +103,7 @@ class Remote implements Serializable {
           script.unstash 'targetArchive'
         }
         
-        script.sh "mkdir -p ~/rhasta/; cd ~/rhasta/ && tar zxvf /tmp/${playbook}/${id}/${file}"
+        script.sh "mkdir -p ~/rhasta/; cd ~/rhasta/ && tar zxf /tmp/${playbook}/${id}/${file}"
       //}
     }
 }
