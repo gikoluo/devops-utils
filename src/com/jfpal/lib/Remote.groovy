@@ -25,7 +25,7 @@ class Remote implements Serializable {
 
     def play(String playbook, String extra) {
       def playCmd = "cd ~/rhasta/ && ansible-playbook ${playbook}.yml -i ${inventory} ${extra}"
-      cmd(playCmd)
+      script.sh(playCmd)
     }
 
     // def deploy( Map conf ) {
@@ -42,6 +42,22 @@ class Remote implements Serializable {
       script.node('ansible-test') {
         script.sh 'whoami'
         script.sh '/usr/sbin/ip a'
+
+        def id = UUID.randomUUID().toString()
+
+        script.sh "mkdir -p /tmp/${playbook}/"
+
+        script.dir("/tmp/${playbook}/") {
+          script.deleteDir()
+          script.unstash 'targetArchive'
+        }
+
+        def extraString = " -e TARGET_FILE=/tmp/${playbook}/${id}.${filename}"
+
+        script.echo "BUILD_ID: ${BUILD_ID}"
+
+        play(playbook, extraString)
+
       }
 
       script.sshagent (credentials: ["ansible-${inventory}"]) {
