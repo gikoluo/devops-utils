@@ -49,7 +49,7 @@ stage('Quick Test') {
 
 milestone 2
 stage('Deploy Test') {
-    node {
+    node("ansible-test") {
         remote = new Remote(steps, 'test', remoteUser)
         remote.deployAnsible( targetFile )
     }

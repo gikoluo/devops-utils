@@ -61,10 +61,6 @@ stage('Test') {
         remote = new Remote(steps, 'test')
         remote.deploy (playbook, targetFile, BUILD_ID)
     }
-    // node {
-    //     remote = new Remote(steps, 'test')
-    //     remote.deploy (playbook, targetFile, BUILD_ID)
-    // }
 }
 
 milestone 4
@@ -73,7 +69,7 @@ stage('UAT') {
         input message: "Test环境 ${testLinks.get('test', '')} 正常了么？可以提交 UAT 了吗?", ok: '准备好了，发布！', submitter: 'qa'
     }
     lock(resource: "${playbook}-staging-server", inversePrecedence: true) {
-        node {
+        node("ansible-uat") {
             echo 'UAT deploy start'
             remote = new Remote(steps, 'uat')
             remote.deploy (playbook, targetFile, BUILD_ID)
@@ -91,7 +87,7 @@ stage ('Production') {
         input message: "可以提交 Prod 了吗?", ok: '准备好了，发布！'
     }
     lock(resource: "${playbook}-production-server", inversePrecedence: true) {
-        node {
+        node("ansible-production") {
             echo 'Production deploy status'
             remote = new Remote(steps, 'prod')
             remote.deploy (playbook, targetFile, BUILD_ID)

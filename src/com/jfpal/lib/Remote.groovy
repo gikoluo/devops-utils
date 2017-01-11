@@ -89,24 +89,21 @@ class Remote implements Serializable {
       script.echo "deploy ${file} to ${inventory} without playbook."
       def playbook = "ansible"
 
-      script.sshagent (credentials: ["ansible-${inventory}"]) {
+      //script.sshagent (credentials: ["ansible-${inventory}"]) {
 
         def filename = file.substring(file.lastIndexOf("/") + 1, file.length());
-        cmd('whoami')
-        cmd('/usr/sbin/ip a')
+        script.sh ('whoami')
+        script.sh ('/usr/sbin/ip a')
         def id = UUID.randomUUID().toString()
 
-        cmd "mkdir -p /tmp/${playbook}/"
+        script.sh  "mkdir -p /tmp/${playbook}/${id}/"
 
-        script.dir("/tmp/${playbook}/") {
+        script.dir("/tmp/${playbook}/${id}/") {
           script.deleteDir()
           script.unstash 'targetArchive'
-
-          scp(file, "/tmp/${playbook}/${id}.${filename}")
         }
-        def extraString = " -e TARGET_FILE=/tmp/${playbook}/${id}.${filename}"
         
-        cmd "mkdir -p ~/rhasta/; cd ~/rhasta/ && tar zxvf /tmp/${playbook}/${id}.${filename}"
-      }
+        script.sh "mkdir -p ~/rhasta/; cd ~/rhasta/ && tar zxvf /tmp/${playbook}/${id}/${file}"
+      //}
     }
 }
