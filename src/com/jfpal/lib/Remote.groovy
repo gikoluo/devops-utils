@@ -39,7 +39,7 @@ class Remote implements Serializable {
 
       script.echo "filename is ${filename}."
 
-      node('linux') {
+      script.node('linux') {
         cmd('whoami')
         cmd('/usr/sbin/ip a')
       }
