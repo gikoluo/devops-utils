@@ -1,0 +1,76 @@
+add user:
+  sudo adduser luochunhui sa
+
+  sudo adduser  luochunhui
+
+
+  sudo groupadd qa
+  sudo groupadd sa
+  sudo groupadd dev
+  sudo groupadd scm
+
+
+USERNAME=admin
+GROUP=admin
+sudo adduser -r -s /bin/false $USERNAME
+sudo usermod -a -G $GROUP $USERNAME
+
+
+三、新用户建立流程：
+
+1. 在 用户管理中： http://192.168.1.23:8080/asynchPeople/ 找到用户。 （优选，需要先建立SVN任务。通过这种方式建立的用户可以讲将SVN用户和JENKINS用户对应起来，实现JENKINS的整合）
+2. 如无法在SVN中找到用户， 如测试人员，则在 http://192.168.1.23:8080/securityRealm/ 这个新建用户。
+3. 找到或建立用户后，进入用户信息页面，点击设置，然后修改其密码。使其可以登录到Jenkins平台，并将密码告知开发人员。请求开发人员必须修改密码。
+4. 进入角色管理页面，http://192.168.1.23:8080/role-strategy/assign-roles ，在 
+Global roles 部分，增加用户，并设置正确的角色，如dev、qa。可多选。
+5. 在Project roles 增加用户，并设置其可以访问的项目。可多选。 然后保存
+
+
+
+
+
+
+
+新项目建立流程（实际模板和结构请参考"开放支付"项目）
+1. 进入 http://192.168.1.23:8080/  
+2. 点击左侧 新建， 在 Enter an item name 填入项目代称。必须英文名，便于源代码管理和项目管理等。
+3. 选择Foler。 点击OK。
+4. 在Display Name中，填入项目中文名。 点击Save。 保存
+5. 将自动进入刚刚建立的目录。如 http://192.168.1.23:8080/job/test2/ 
+6. 点击左上角新建（New Item），建立builds子目录，Display Name留空。
+7. 点击左上角新建（New Item），建立编译工程。Enter an item name 中填入英文代称，一般可以SVN中的目录命名。
+8. 如果项目编译为Maven项目，在Copy From填入/openpay/builds/opm。从以往的已经完成的配置中复制配置过来， 以便减少配置的复杂性和统一配置。 然后点击保存，自动进入下一个编辑页面。
+9. 在『源码管理』 中，修改SVN或GIT的代码路径。修改 构建后操作 用于存档的文件 的路径 。根据需要可修改其他的设置， 如构建设置的邮件通知等。然后保存。
+10. 回到http://192.168.1.23:8080/job/test2/ ， 建立发布JOB. 左上角点击新建（New Item）。
+11. 在Enter an item name中填入： $SERVICE_publisher ， 必须英文名称。 下方Copy From填入 /dspay/api_publisher，以便减少配置工作量。点击OK。
+12. 在Advanced Project Options 中点击高级，展开， 在 Display Name 填入中文名称，如点刷支付 API(BIZ) 发布。
+13. 在 Properties Content 中设置以下值。
+PROJECT_NAME=dspay #为项目名称。
+SERVICE_NAME=api   #为服务名称
+BUILD_JOB=${PROJECT_NAME}/builds/api_all   #为编译工作。
+TARGET_FILE=ds-biz-1.0.tar.gz              #为编译工作内的用于存档的文件的目标文件。
+PLAYBOOK=${PROJECT_NAME}/${SERVICE_NAME}   #为上线的playbook脚本，存储在rhasta项目中。一般不改
+14. 点击保存。然后测试build job 和publish job
+
+
+新项目后续流程：
+1. 在build和发布流程测试通过后，需要建立项目权限，并将权限分配给实际开发人员和测试人员。
+2. 进入 项目角色管理页面 http://192.168.1.23:8080/role-strategy/manage-roles 。 在 Project roles 中   Role to add 填入 项目代称， 在  Pattern 填入  ^项目代称/.*。 这里的项目代称与『新项目建立流程』第2步的代称一致。
+3. 分配该项目角色，参见新用户建立流程。
+
+
+新用户建立流程：
+
+1. 在 用户管理中： http://192.168.1.23:8080/asynchPeople/ 找到用户。 （优选，需要先建立SVN任务。通过这种方式建立的用户可以讲将SVN用户和JENKINS用户对应起来，实现JENKINS的整合）
+2. 如无法在SVN中找到用户， 如测试人员，则在 http://192.168.1.23:8080/securityRealm/ 这个新建用户。
+3. 找到或建立用户后，进入用户信息页面，点击设置，然后修改其密码。使其可以登录到Jenkins平台，并将密码告知开发人员。请求开发人员必须修改密码。
+4. 进入角色管理页面，http://192.168.1.23:8080/role-strategy/assign-roles ，在 
+Global roles 部分，增加用户，并设置正确的角色，如dev、qa。可多选。
+5. 在Project roles 增加用户，并设置其可以访问的项目。可多选。 然后保存
+
+
+其他：
+1. jenkins本身的配置、JOBS都应该被代码管理，保障JOBS和Jenkins配置的更新历史。因此需定期登录到Jenkins服务器（23机器），切换到jenkins用户后，在/data/jenkins 下执行 git commit 和 git push工作。 （后期我尝试将这一个过程自动化）
+
+
+

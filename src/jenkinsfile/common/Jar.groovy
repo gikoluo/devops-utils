@@ -66,7 +66,7 @@ stage('Test') {
 milestone 4
 stage('UAT') {
     timeout(time:1, unit:'DAYS') {
-        input message: "Test环境 ${testLinks.get('test', '')} 正常了么？可以提交 UAT 了吗?", ok: '准备好了，发布！'
+        input message: "Test环境 ${testLinks.get('test', '')} 正常了么？可以提交 UAT 了吗?", ok: '准备好了，发布！', submitter: 'qa'
     }
     lock(resource: "${playbook}-staging-server", inversePrecedence: true) {
         node {
@@ -76,7 +76,7 @@ stage('UAT') {
         }
     }
     timeout(time:1, unit:'DAYS') {
-        input message: " UAT 通过了吗? ${testLinks.get('uat', '')} ", ok: '通过！'
+        input message: " UAT 通过了吗? ${testLinks.get('uat', '')} ", ok: '通过！', submitter: 'qa'
     }
 }
 
@@ -95,7 +95,7 @@ stage ('Production') {
         }
     }
     timeout(time:1, unit:'DAYS') {
-        input message: "Prod测试完成了吗? ${testLinks.get('prod', '')} ", ok: '通过！下班，困觉！'
+        input message: "Prod测试完成了吗? ${testLinks.get('prod', '')} ", ok: '通过！下班，困觉！', submitter: 'qa'
     }
 }
 

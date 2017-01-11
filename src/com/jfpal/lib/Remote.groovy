@@ -39,10 +39,15 @@ class Remote implements Serializable {
 
       script.echo "filename is ${filename}."
 
-      script.sshagent (credentials: ["ansible-${inventory}"]) {
-        //remote = new Remote(script, "ansible-${inventory}", remoteUser)
+      node('linux') {
         cmd('whoami')
         cmd('/usr/sbin/ip a')
+      }
+
+      script.sshagent (credentials: ["ansible-${inventory}"]) {
+        //remote = new Remote(script, "ansible-${inventory}", remoteUser)
+        //cmd('whoami')
+        //cmd('/usr/sbin/ip a')
         def id = UUID.randomUUID().toString()
 
         cmd "mkdir -p /tmp/${playbook}/"
