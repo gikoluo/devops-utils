@@ -57,10 +57,14 @@ stage('QA') {
 
 milestone 3
 stage('Test') {
-    node {
+    node("ansible-test") {
         remote = new Remote(steps, 'test')
         remote.deploy (playbook, targetFile, BUILD_ID)
     }
+    // node {
+    //     remote = new Remote(steps, 'test')
+    //     remote.deploy (playbook, targetFile, BUILD_ID)
+    // }
 }
 
 milestone 4

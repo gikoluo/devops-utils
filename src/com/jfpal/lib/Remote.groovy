@@ -39,50 +39,50 @@ class Remote implements Serializable {
 
       script.echo "filename is ${filename}."
 
-      script.node("ansible-${inventory}") {
+      //script.node("ansible-${inventory}") {
         script.sh 'whoami'
         script.sh '/usr/sbin/ip a'
 
         def id = UUID.randomUUID().toString()
 
-        script.sh "mkdir -p /tmp/${playbook}/"
+        script.sh "mkdir -p /tmp/${playbook}/${id}/"
 
-        script.dir("/tmp/${playbook}/") {
+        script.dir("/tmp/${playbook}/${id}/") {
           script.deleteDir()
           script.unstash 'targetArchive'
         }
 
-        def extraString = " -e TARGET_FILE=/tmp/${playbook}/${id}.${filename}"
+        def extraString = " -e TARGET_FILE=/tmp/${playbook}/${id}/${file}"
 
         script.echo "BUILD_ID: ${BUILD_ID}"
 
         play(playbook, extraString)
 
-      }
+      //}
 
-      script.sshagent (credentials: ["ansible-${inventory}"]) {
-        //remote = new Remote(script, "ansible-${inventory}", remoteUser)
-        //cmd('whoami')
-        //cmd('/usr/sbin/ip a')
-        def id = UUID.randomUUID().toString()
+      // script.sshagent (credentials: ["ansible-${inventory}"]) {
+      //   //remote = new Remote(script, "ansible-${inventory}", remoteUser)
+      //   //cmd('whoami')
+      //   //cmd('/usr/sbin/ip a')
+      //   def id = UUID.randomUUID().toString()
 
-        cmd "mkdir -p /tmp/${playbook}/"
+      //   cmd "mkdir -p /tmp/${playbook}./"
 
-        script.dir("/tmp/${playbook}/") {
-          script.deleteDir()
-          script.unstash 'targetArchive'
+      //   script.dir("/tmp/${playbook}/") {
+      //     script.deleteDir()
+      //     script.unstash 'targetArchive'
 
-          scp(file, "/tmp/${playbook}/${id}.${filename}")
-        }
-        def extraString = " -e TARGET_FILE=/tmp/${playbook}/${id}.${filename}"
-        if (tags.size() > 0) {
-          extraString += " --tags ${tags.join(',')}"
-        }
-        extraString += " -e BUILD_ID=${BUILD_ID}"
-        script.echo "BUILD_ID: ${BUILD_ID}"
+      //     scp(file, "/tmp/${playbook}/${id}.${filename}")
+      //   }
+      //   def extraString = " -e TARGET_FILE=/tmp/${playbook}/${id}.${filename}"
+      //   if (tags.size() > 0) {
+      //     extraString += " --tags ${tags.join(',')}"
+      //   }
+      //   extraString += " -e BUILD_ID=${BUILD_ID}"
+      //   script.echo "BUILD_ID: ${BUILD_ID}"
 
-        play(playbook, extraString)
-      }
+      //   play(playbook, extraString)
+      // }
     }
 
     def deployAnsible( String file ) {
