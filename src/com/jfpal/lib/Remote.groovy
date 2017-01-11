@@ -40,8 +40,8 @@ class Remote implements Serializable {
       script.echo "filename is ${filename}."
 
       script.node('ansible-test') {
-        cmd('whoami')
-        cmd('/usr/sbin/ip a')
+        script.sh 'whoami'
+        script.sh '/usr/sbin/ip a'
       }
 
       script.sshagent (credentials: ["ansible-${inventory}"]) {
