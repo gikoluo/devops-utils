@@ -16,7 +16,7 @@ def serviceName = env.SERVICE_NAME
 def buildJob = env.BUILD_JOB
 
 def targetFile = env.TARGET_FILE
-
+def autoBuild = false
 
 echo "${projectName}"
 
@@ -30,6 +30,10 @@ if(env.PLAYBOOK) {
 }
 else {
     playbook = "${projectName}/${serviceName}"
+}
+
+if(env.AUTO_BUILD) {
+    autoBuild = env.AUTO_BUILD
 }
 
 
