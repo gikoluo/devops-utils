@@ -102,7 +102,7 @@ stage('UAT') {
         input message: "Test环境 ${testLinks.get('test', '')} 正常了么？可以提交 UAT 了吗?", ok: '准备好了，发布！', submitter: 'qa'
     }
     lock(resource: "${playbook}-staging-server", inversePrecedence: true) {
-        node {
+        node("ansible-uat") {
             echo 'UAT deploy start'
             remote = new Remote(steps, 'uat')
             remote.deploy (playbook, targetFile, BUILD_ID, tags)
