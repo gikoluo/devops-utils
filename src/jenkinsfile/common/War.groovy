@@ -5,38 +5,14 @@
 import com.jfpal.lib.Utilities
 import com.jfpal.lib.Remote
 
-
 def utils = new Utilities(steps)
-
-
-def projectName = env.PROJECT_NAME
-def serviceName = env.SERVICE_NAME
-
-
-def buildJob = env.BUILD_JOB
-
-def targetFile = env.TARGET_FILE
-
-
-echo "${projectName}"
-
-// echo build.environment.get("PROJECT_NAME")
-// echo build.buildVariableResolver.resolve("PROJECT_NAME")
-
-def playbook = "";
-
-if(env.PLAYBOOK) {
-    playbook = env.PLAYBOOK
-}
-else {
-    playbook = "${projectName}/${serviceName}"
-}
-
-
+def playbook = "dspay/dsmanage"
+def buildProjectName = "DSPAY/builds/manage_all"
+def targetFile = "DSManage-0.0.1-SNAPSHOT.war"
 def archivePublisher = true
 
 def testLinks = [
-  "test": "https://bbctest.91dbq.com:8443/",
+  "test": "http://192.180.3.56:8180/DSManage/",
   "uat": "https://bbcuat.91dbq.com:8443/",
   "prod": "https://bbc.91dbq.com:8443/"
 ]
@@ -45,7 +21,7 @@ def testLinks = [
 milestone 1
 stage('Copy Target') {
     node {
-        utils.copyTarget(buildJob, targetFile, archivePublisher)
+        utils.copyTarget(buildProjectName, targetFile, archivePublisher)
     }
 }
 
@@ -57,7 +33,7 @@ stage('QA') {
 
 milestone 3
 stage('Test') {
-    node("ansible-test") {
+    node {
         remote = new Remote(steps, 'test')
         remote.deploy (playbook, targetFile, BUILD_ID)
     }
@@ -66,17 +42,17 @@ stage('Test') {
 milestone 4
 stage('UAT') {
     timeout(time:1, unit:'DAYS') {
-        input message: "Test环境 ${testLinks.get('test', '')} 正常了么？可以提交 UAT 了吗?", ok: '准备好了，发布！', submitter: 'qa'
+        input message: "Test环境 ${testLinks.get('test', '')} 正常了么？可以提交 UAT 了吗?", ok: '准备好了，发布！'
     }
     lock(resource: "${playbook}-staging-server", inversePrecedence: true) {
-        node("ansible-uat") {
+        node {
             echo 'UAT deploy start'
             remote = new Remote(steps, 'uat')
             remote.deploy (playbook, targetFile, BUILD_ID)
         }
     }
     timeout(time:1, unit:'DAYS') {
-        input message: " UAT 通过了吗? ${testLinks.get('uat', '')} ", ok: '通过！', submitter: 'qa'
+        input message: " UAT 通过了吗? ${testLinks.get('uat', '')} ", ok: '通过！'
     }
 }
 
@@ -86,8 +62,8 @@ stage ('Production') {
     timeout(time:1, unit:'DAYS') {
         input message: "可以提交 Prod 了吗?", ok: '准备好了，发布！'
     }
-    lock(resource: "${playbook}-prod-server", inversePrecedence: true) {
-        node("ansible-prod") {
+    lock(resource: "${playbook}-production-server", inversePrecedence: true) {
+        node {
             echo 'Production deploy status'
             remote = new Remote(steps, 'prod')
             remote.deploy (playbook, targetFile, BUILD_ID)
@@ -95,7 +71,7 @@ stage ('Production') {
         }
     }
     timeout(time:1, unit:'DAYS') {
-        input message: "Prod测试完成了吗? ${testLinks.get('prod', '')} ", ok: '通过！下班，困觉！', submitter: 'qa'
+        input message: "Prod测试完成了吗? ${testLinks.get('prod', '')} ", ok: '通过！下班，困觉！'
     }
 }
 

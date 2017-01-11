@@ -62,7 +62,7 @@ stage('UAT') {
             input id: 'pushToUAT', message: "Test环境正常了么？可以提交 UAT 了吗?", ok: '准备好了，发布！', submitter: 'sa'
         }
 
-        node {
+        node("ansible-uat") {
             echo 'UAT deploy start'
             remote = new Remote(steps, 'uat', remoteUser)
             remote.deployAnsible( targetFile )
@@ -83,7 +83,7 @@ stage ('Production') {
             input message: "可以提交 Prod 了吗?", ok: '准备好了，发布！', submitter: 'sa'
         }
         
-        node {
+        node("ansible-prod") {
             echo 'Production deploy status'
             remote = new Remote(steps, 'prod', remoteUser)
             remote.deployAnsible( targetFile )
