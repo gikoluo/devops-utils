@@ -64,46 +64,21 @@ stage('QA') {
 
 milestone 3
 stage('Test') {
-    node("ansible-test") {
-        remote = new Remote(steps, 'test')
-        remote.deploy (playbook, targetFile, BUILD_ID)
-    }
+    remote = new Remote(steps, 'test')
+    remote.deploy (playbook, targetFile, BUILD_ID)
 }
 
 milestone 4
 stage('UAT') {
-    timeout(time:1, unit:'DAYS') {
-        input message: "Test环境 ${testLinks.get('test', '')} 正常了么？可以提交 UAT 了吗?", ok: '准备好了，发布！', submitter: 'qa'
-    }
-    lock(resource: "${playbook}-staging-server", inversePrecedence: true) {
-        node("ansible-uat") {
-            echo 'UAT deploy start'
-            remote = new Remote(steps, 'uat')
-            remote.deploy (playbook, targetFile, BUILD_ID)
-        }
-    }
-    timeout(time:1, unit:'DAYS') {
-        input message: " UAT 通过了吗? ${testLinks.get('uat', '')} ", ok: '通过！', submitter: 'qa'
-    }
+    remote = new Remote(steps, 'prod')
+    remote.deployProcess (playbook, targetFile, BUILD_ID)
 }
 
 
 milestone 5
 stage ('Production') {
-    timeout(time:1, unit:'DAYS') {
-        input message: "可以提交 Prod 了吗?", ok: '准备好了，发布！'
-    }
-    lock(resource: "${playbook}-prod-server", inversePrecedence: true) {
-        node("ansible-prod") {
-            echo 'Production deploy status'
-            remote = new Remote(steps, 'prod')
-            remote.deploy (playbook, targetFile, BUILD_ID)
-            echo "Production deployed"
-        }
-    }
-    timeout(time:1, unit:'DAYS') {
-        input message: "Prod测试完成了吗? ${testLinks.get('prod', '')} ", ok: '通过！下班，困觉！', submitter: 'qa'
-    }
+    remote = new Remote(steps, 'prod')
+    remote.deployProcess (playbook, targetFile, BUILD_ID)
 }
 
 
