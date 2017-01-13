@@ -54,7 +54,7 @@ class Remote implements Serializable {
 
     def unstash(String playbook, String file, String BUILD_ID="0") {
       script.node("ansible-${inventory}") {
-        DEBUG_PRINT "Unstash target to server."
+        DEBUG_PRINT("unstash target to server.")
 
         script.sh "mkdir -p /tmp/${playbook}/${BUILD_ID}/"
 
@@ -62,7 +62,7 @@ class Remote implements Serializable {
           script.deleteDir()
           script.unstash 'targetArchive'
         }
-        DEBUG_PRINT "Unstash finished."
+        DEBUG_PRINT("unstash finished.")
       }
     }
 
