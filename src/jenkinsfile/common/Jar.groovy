@@ -65,7 +65,7 @@ stage('QA') {
 milestone 3
 stage('Test') {
     remote = new Remote(steps, 'test')
-    remote.deploy (playbook, targetFile, BUILD_ID)
+    remote.deployProcess (playbook, targetFile, BUILD_ID)
 }
 
 milestone 4
