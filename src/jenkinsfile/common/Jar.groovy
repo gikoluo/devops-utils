@@ -70,7 +70,7 @@ stage('Test') {
 
 milestone 4
 stage('UAT') {
-    remote = new Remote(steps, 'prod')
+    remote = new Remote(steps, 'uat')
     remote.deployProcess (playbook, targetFile, BUILD_ID)
 }
 
