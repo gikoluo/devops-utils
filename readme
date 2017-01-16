@@ -3,6 +3,9 @@ add user:
 
   sudo adduser  luochunhui
 
+for g in dev qa sa scm admin; do
+  sudo groupadd $g
+done
 
   sudo groupadd qa
   sudo groupadd sa
@@ -14,6 +17,7 @@ USERNAME=admin
 GROUP=admin
 sudo adduser -r -s /bin/false $USERNAME
 sudo usermod -a -G $GROUP $USERNAME
+sudo passwd $USERNAME
 
 
 三、新用户建立流程：

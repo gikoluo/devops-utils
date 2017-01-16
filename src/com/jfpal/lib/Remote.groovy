@@ -1,5 +1,10 @@
+/**
+ * file: com.jfpal.lib.Remote.groovy
+ * 
+ * 使用Ansible节点各环境节点，用于上线。
+ *
+ */
 package com.jfpal.lib
-
 
 class Remote implements Serializable {
     def script
@@ -18,11 +23,11 @@ class Remote implements Serializable {
       script.echo "============ ${msg} ============"
     }
 
-    def play(String playbook, String extra) {
-      def playCmd = "cd ~/rhasta/ && ansible-playbook ${playbook}.yml -i ${inventory} ${extra}"
-      script.sh(playCmd)
-    }
+    
 
+    /**
+     * Deploy Entry
+     */
     def deployProcess( String playbook, String file, String BUILD_ID="0", ArrayList tags=['update']  ) {
       script.lock(resource: "${playbook}-prod-server", inversePrecedence: true) {
         try {
@@ -43,8 +48,10 @@ class Remote implements Serializable {
               script.input message: "${inventory}测试完成了吗? ", ok: '通过！', submitter: 'qa'
             }
           }
-        } catch (err) {
+        }
+        catch (err) {
           DEBUG_PRINT err.toString()
+          throw err
         }
         finally {
           this.clean (playbook, file, BUILD_ID)
@@ -52,20 +59,9 @@ class Remote implements Serializable {
       }
     }
 
-    def unstash(String playbook, String file, String BUILD_ID="0") {
-      script.node("ansible-${inventory}") {
-        DEBUG_PRINT("unstash[scp] target to server.")
-
-        script.sh "mkdir -p /tmp/${playbook}/${BUILD_ID}/"
-
-        script.dir("/tmp/${playbook}/${BUILD_ID}/") {
-          script.deleteDir()
-          script.unstash 'targetArchive'
-        }
-        DEBUG_PRINT("unstash[scp] finished.")
-      }
-    }
-
+    /**
+     * deploy core
+     */
     def deploy( String playbook, String file, String BUILD_ID="0", ArrayList tags=['update'] ) {
       script.node("ansible-${inventory}") {
         DEBUG_PRINT "${inventory} deploy started"
@@ -88,6 +84,35 @@ class Remote implements Serializable {
       }
     }
 
+    /**
+     * Run ansible playbook
+     */
+    def play(String playbook, String extra) {
+      def playCmd = "cd ~/rhasta/ && ansible-playbook ${playbook}.yml -i ${inventory} ${extra}"
+      script.sh(playCmd)
+    }
+
+    /**
+     * unstash will copy the file to jenkins slave node
+     */
+    def unstash(String playbook, String file, String BUILD_ID="0") {
+      script.node("ansible-${inventory}") {
+        DEBUG_PRINT("unstash[scp] target to server.")
+
+        script.sh "mkdir -p /tmp/${playbook}/${BUILD_ID}/"
+
+        script.dir("/tmp/${playbook}/${BUILD_ID}/") {
+          script.deleteDir()
+          script.unstash 'targetArchive'
+        }
+        DEBUG_PRINT("unstash[scp] finished.")
+      }
+    }
+
+
+    /**
+     * clean files created in deploy process
+     */
     def clean(String playbook, String file, String BUILD_ID="0") {
       script.node("ansible-${inventory}") {
         DEBUG_PRINT "${inventory} clean"
