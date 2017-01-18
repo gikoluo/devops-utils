@@ -43,10 +43,8 @@ class Remote implements Serializable {
           
           this.deploy (playbook, file, BUILD_ID)
 
-          if(inventory != "test") {
-            script.timeout(time:1, unit:'DAYS') {
-              script.input message: "${inventory}测试完成了吗? ", ok: '通过！', submitter: 'qa'
-            }
+          script.timeout(time:1, unit:'DAYS') {
+            script.input message: "${inventory}测试完成了吗? ", ok: '通过！', submitter: 'qa'
           }
         }
         catch (err) {
