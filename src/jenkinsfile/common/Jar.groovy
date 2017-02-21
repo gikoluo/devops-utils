@@ -30,7 +30,7 @@ if(env.AUTO_BUILD) {
 }
 
 
-echo "Deploy ${projectName}/${serviceName} with ${playbook}"
+echo "Deploy ${projectName}/${serviceName} with ${playbook}.yml "
 echo "buildJob: ${buildJob}"
 echo "targetFile: ${targetFile}"
 echo "autoBuild: ${autoBuild}"
