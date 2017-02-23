@@ -58,7 +58,7 @@ stage('Test') {
 
     node("ansible-test") {
         remote = new Remote(steps, 'test')
-        remote.deploy (playbook, targetFile, BUILD_ID)
+        remote.deploy (playbook, targetFile, BUILD_ID, tags)
     }
 
 }
