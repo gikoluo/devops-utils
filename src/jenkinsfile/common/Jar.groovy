@@ -49,7 +49,7 @@ stage('Copy Target') {
         build job: buildJob
     }
     node('master') {
-        utils.copyTarget(buildJob, targetFile, BUILD_ID, tags)
+        utils.copyTarget(buildJob, targetFile, BUILD_ID)
     }
 }
 
