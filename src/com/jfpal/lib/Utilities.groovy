@@ -25,7 +25,7 @@ class Utilities implements Serializable  {
   }
 
   def finish() {
-    Noticer.send( "${PPROJECT_NAME} 已完成上线。:tada: " )
+    Noticer.send( "${PPROJECT_NAME} 已完成上线。:tada: ", "INFO" )
   }
 
   def qaCheck() {
