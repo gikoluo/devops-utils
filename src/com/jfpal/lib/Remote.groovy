@@ -33,7 +33,7 @@ class Remote implements Serializable {
       script.lock(resource: "${playbook}-prod-server", inversePrecedence: true) {
         try {
           DEBUG_PRINT "DeployProcess ${file} to ${inventory} with playbook ${playbook} tagged by ${tags}, BUILD_ID: ${BUILD_ID}."
-          Noticer.send( "DeployProcess ${file} to ${inventory} with playbook ${playbook} tagged by ${tags}, BUILD_ID: ${BUILD_ID}." )
+          Noticer.send( "DeployProcess ${file} to ${inventory} with playbook ${playbook} tagged by ${tags}, BUILD_ID: ${BUILD_ID}.".toString()  )
           this.unstash (playbook, file, BUILD_ID)
 
           if(inventory != "test") {
@@ -44,14 +44,14 @@ class Remote implements Serializable {
           
           this.deploy (playbook, file, BUILD_ID, tags)
 
-          Noticer.send( "BUILD_ID: ${BUILD_ID} deployed success" )
+          Noticer.send( "BUILD_ID: ${BUILD_ID} deployed success".toString()  )
           
           script.timeout(time:1, unit:'DAYS') {
             script.input message: "${inventory}测试完成了吗? ", ok: '通过！', submitter: 'qa'
           }
         }
         catch (err) {
-          Noticer.send( "BUILD_ID: ${BUILD_ID} Error" )
+          Noticer.send( "BUILD_ID: ${BUILD_ID} Error".toString() )
           DEBUG_PRINT err.toString()
           throw err
         }
