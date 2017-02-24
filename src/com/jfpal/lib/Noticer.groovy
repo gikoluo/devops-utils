@@ -15,6 +15,8 @@ class Noticer implements Serializable {
     }
 
     def send(String msg, String type="INFO") {
-      steps.sh '/usr/bin/bearychat -t "' + type + ': ' + msg + '" -c "DevOps"'
+      steps.node("master") {
+        steps.sh '/usr/bin/bearychat -t "' + type + ': ' + msg + '" -c "DevOps"'
+      }
     }
 }
