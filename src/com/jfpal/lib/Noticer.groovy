@@ -13,7 +13,7 @@ class Noticer implements Serializable {
 
     Noticer() {}
 
-    def send(String msg， String type="INFO") {
+    def send(String msg, String type="INFO") {
       script.sh 'bearychat -t "' + type + ': ' + msg + '" -c "DevOps"'
     }
 }
