@@ -76,4 +76,8 @@ stage ('Production') {
     remote.deployProcess(playbook, targetFile, BUILD_ID, tags)
 }
 
+utils.finish()
+
+
+
 
