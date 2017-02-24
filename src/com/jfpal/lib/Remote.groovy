@@ -10,6 +10,7 @@ class Remote implements Serializable {
     def script
     def inventory
     def user
+    def noticer
 
     Remote() {}
 
