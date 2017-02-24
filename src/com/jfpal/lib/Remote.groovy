@@ -118,7 +118,7 @@ class Remote implements Serializable {
     def clean(String playbook, String file, String BUILD_ID="0") {
       script.node("ansible-${inventory}") {
         DEBUG_PRINT "${inventory} clean"
-        script.sh  "rm -r /tmp/${playbook}/${BUILD_ID}/"
+        script.sh  "rm -rf /tmp/${playbook}/${BUILD_ID}/"
       }
     }
 
