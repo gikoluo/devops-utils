@@ -17,6 +17,7 @@ class Remote implements Serializable {
         this.script = script
         this.inventory = inventory
         this.user = user
+        this.noticer = new Noticer(script)
     }
 
     def DEBUG_PRINT(String msg) {
@@ -33,7 +34,7 @@ class Remote implements Serializable {
       script.lock(resource: "${playbook}-prod-server", inversePrecedence: true) {
         try {
           DEBUG_PRINT "DeployProcess ${file} to ${inventory} with playbook ${playbook} tagged by ${tags}, BUILD_ID: ${BUILD_ID}."
-          (new Noticer()).send( "DeployProcess ${file} to ${inventory} with playbook ${playbook} tagged by ${tags}, BUILD_ID: ${BUILD_ID}.".toString(), "INFO"  )
+          noticer.send( "DeployProcess ${file} to ${inventory} with playbook ${playbook} tagged by ${tags}, BUILD_ID: ${BUILD_ID}.".toString(), "INFO"  )
           this.unstash (playbook, file, BUILD_ID)
 
           if(inventory != "test") {
@@ -44,14 +45,14 @@ class Remote implements Serializable {
           
           this.deploy (playbook, file, BUILD_ID, tags)
 
-          (new Noticer()).send( "BUILD_ID: ${BUILD_ID} deployed success".toString(), "INFO"  )
+          noticer.send( "BUILD_ID: ${BUILD_ID} deployed success".toString(), "INFO"  )
           
           script.timeout(time:1, unit:'DAYS') {
             script.input message: "${inventory}测试完成了吗? ", ok: '通过！', submitter: 'qa'
           }
         }
         catch (err) {
-          (new Noticer()).send( "BUILD_ID: ${BUILD_ID} Error".toString(), "ERROR" )
+          noticer.send( "BUILD_ID: ${BUILD_ID} Error".toString(), "ERROR" )
           DEBUG_PRINT err.toString()
           throw err
         }

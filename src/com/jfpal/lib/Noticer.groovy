@@ -6,14 +6,15 @@
  */
 package com.jfpal.lib
 
-class Noticer implements Serializable {
-    def script
-    def inventory
-    def user
 
-    Noticer() {}
+class Noticer implements Serializable {
+    def steps
+
+    Noticer(steps) {
+      this.steps = steps
+    }
 
     def send(String msg, String type="INFO") {
-      script.sh 'bearychat -t "' + type + ': ' + msg + '" -c "DevOps"'
+      steps.sh 'bearychat -t "' + type + ': ' + msg + '" -c "DevOps"'
     }
 }
