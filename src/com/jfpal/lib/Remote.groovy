@@ -35,25 +35,37 @@ class Remote implements Serializable {
       script.lock(resource: "${playbook}-prod-server", inversePrecedence: true) {
         try {
           DEBUG_PRINT "DeployProcess ${file} to ${inventory} with playbook ${playbook} tagged by ${tags}, BUILD_ID: ${BUILD_ID}."
-          noticer.send( "DeployProcess ${file} to ${inventory} with playbook ${playbook} tagged by ${tags}, BUILD_ID: ${BUILD_ID}.".toString(), "INFO"  )
+          noticer.send( "Deploy Start. Env: ${inventory}; File: ${file}; Playbook: ${playbook}. BUILD_ID: ${BUILD_ID}.".toString(), "INFO"  )
           this.unstash (playbook, file, BUILD_ID)
 
           if(inventory != "test") {
             script.timeout(time:1, unit:'DAYS') {
-              script.input message: "可以提交 ${inventory} 了吗?", ok: '准备好了，发布！', submitter: 'qa'
+              def submitter = "";
+              if(inventory == 'prod') {
+                submitter = "scm";
+              }
+              else {
+                submitter = "qa";
+              }
+              script.input message: "可以发布 ${inventory} 了吗?", ok: '可以了，发布！', submitter: submitter
             }
           }
           
           this.deploy (playbook, file, BUILD_ID, tags)
 
-          noticer.send( "BUILD_ID: ${BUILD_ID} deployed success".toString(), "INFO"  )
+          noticer.send( "BUILD_ID: ${BUILD_ID} to ${inventory} deploy success".toString(), "INFO"  )
           
           script.timeout(time:1, unit:'DAYS') {
-            script.input message: "${inventory}测试完成了吗? ", ok: '通过！', submitter: 'qa'
-          }
+            script.input message: "${inventory}测试通过了吗? ", ok: '通过！', submitter: 'qa'
+          } 
+        }
+        catch( RejectedAccessException ) {
+          noticer.send( "BUILD_ID: ${BUILD_ID} to ${inventory} Rejected".toString() + err.toString(), "ERROR" )
+          DEBUG_PRINT err.toString()
+          throw err
         }
         catch (err) {
-          noticer.send( "BUILD_ID: ${BUILD_ID} Error".toString(), "ERROR" )
+          noticer.send( "BUILD_ID: ${BUILD_ID} to ${inventory} Error".toString() + err.toString(), "ERROR" )
           DEBUG_PRINT err.toString()
           throw err
         }
@@ -69,11 +81,6 @@ class Remote implements Serializable {
     def deploy( String playbook, String file, String BUILD_ID="0", ArrayList tags=['update'] ) {
       script.node("ansible-${inventory}") {
         DEBUG_PRINT "${inventory} deploy started"
-
-        script.sh 'whoami'
-        script.sh '/usr/sbin/ip a'
-
-        //def id = UUID.randomUUID().toString()
 
         def extraString = " -e TARGET_FILE=/tmp/${playbook}/${BUILD_ID}/${file}"
 
@@ -130,7 +137,7 @@ class Remote implements Serializable {
 
       def filename = file.substring(file.lastIndexOf("/") + 1, file.length());
       script.sh ('whoami')
-      script.sh ('/usr/sbin/ip a')
+
       def id = UUID.randomUUID().toString()
 
       script.sh  "mkdir -p /tmp/${playbook}/${id}/"
