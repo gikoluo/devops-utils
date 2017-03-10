@@ -64,18 +64,14 @@ stage('Copy Target') {
     //     submitter: 'qa,dev'
     // )
 
-    targetFile = userInput['modules_list'].readLines().join(",")
+    //targetFile = userInput['modules_list'].readLines().join(",")
+    //force_restart = userInput['force_restart']
 
     tmp = '''\
 modules/mod_bcpay_check_pay_business.so
 modules/mod_bcpay_check_pay_limit.so
 '''
     targetFile = tmp.readLines().join(",")
-
-
-    
-
-    force_restart = userInput['force_restart']
 
     node('master') {
         utils.copyTarget(buildJob, targetFile, BUILD_ID)
