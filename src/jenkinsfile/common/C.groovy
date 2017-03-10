@@ -53,18 +53,27 @@ stage('Copy Target') {
         build job: buildJob
     }
 
-    def userInput = input(
-        id: 'Modules_list_input', 
-        message: '请选择上线的模块列表', 
-        ok: '确认', 
-        parameters: [
-          text(defaultValue: '', description: '上线Modules列表。每行一个。', name: 'modules_list'),
-          booleanParam(defaultValue: false, description: '强制重启模式。 不选则动态内存刷新', name: 'force_restart')
-        ],
-        submitter: 'qa,dev'
-    )
+    // def userInput = input(
+    //     id: 'Modules_list_input', 
+    //     message: '请选择上线的模块列表', 
+    //     ok: '确认', 
+    //     parameters: [
+    //       text(defaultValue: '', description: '上线Modules列表。每行一个。', name: 'modules_list'),
+    //       booleanParam(defaultValue: false, description: '强制重启模式。 不选则动态内存刷新', name: 'force_restart')
+    //     ],
+    //     submitter: 'qa,dev'
+    // )
 
     targetFile = userInput['modules_list'].readLines().join(",")
+
+    tmp = '''\
+modules/mod_bcpay_check_pay_business.so
+modules/mod_bcpay_check_pay_limit.so
+'''
+    targetFile = tmp.readLines().join(",")
+
+
+    
 
     force_restart = userInput['force_restart']
 
