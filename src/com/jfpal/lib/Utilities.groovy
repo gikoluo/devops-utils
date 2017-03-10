@@ -18,6 +18,7 @@ class Utilities implements Serializable  {
       if ( archive ) {
         steps.archiveArtifacts artifacts:targetFile, fingerprint: true
       }
+      //#Use a comma separated list to add more than one expression.
       steps.stash name:'targetArchive', includes: targetFile
     }
 
