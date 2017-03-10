@@ -36,8 +36,8 @@ if(env.TAGS) {
     tags << env.TAGS
 }
 
-
-
+def modules_list = []
+def force_restart = false
 
 
 
@@ -59,10 +59,15 @@ stage('Copy Target') {
         ok: '确认', 
         parameters: [
           text(defaultValue: '', description: '上线Modules列表。每行一个。', name: 'modules_list'),
-          booleanParam(defaultValue: false, description: '强制重启模式。 不选则动态内存刷新', name: 'refresh')
+          booleanParam(defaultValue: false, description: '强制重启模式。 不选则动态内存刷新', name: 'force_restart')
         ],
         submitter: 'qa,dev'
     )
+
+    targetFile = userInput['modules_list'].readLines()
+    assert list instanceof ArrayList
+
+    force_restart = userInput['force_restart']
 
     node('master') {
         utils.copyTarget(buildJob, targetFile, BUILD_ID)
