@@ -65,7 +65,6 @@ stage('Copy Target') {
     )
 
     targetFile = userInput['modules_list'].readLines().join(",")
-    assert targetFile instanceof ArrayList
 
     force_restart = userInput['force_restart']
 
