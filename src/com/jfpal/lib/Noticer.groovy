@@ -22,7 +22,7 @@ class Noticer implements Serializable {
 
       steps.echo "==============="
 
-      steps.echo "=======${BUILD_USER}== ============"
+      steps.echo "=======${steps.BUILD_USER}== ============"
 
 
       steps.node("master") {
