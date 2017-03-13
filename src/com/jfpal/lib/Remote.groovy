@@ -30,7 +30,7 @@ class Remote implements Serializable {
      * Deploy Entry
      */
     def deployProcess( String playbook, String file, String BUILD_ID="0", ArrayList tags=['update']  ) {
-      script.lock(resource: "${playbook}-prod-server", inversePrecedence: true) {
+      script.lock(resource: "${playbook}-${inventory}-server", inversePrecedence: true) {
         def currentUser = 'SYSTEM'
         try {
           DEBUG_PRINT "发布开始。项目: ${playbook}, 发布编号: ${BUILD_ID} ; 环境: ${inventory}; 文件: ${file}; Tags: ${tags}； "
