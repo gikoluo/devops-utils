@@ -22,10 +22,17 @@ class Noticer implements Serializable {
 
       steps.echo "==============="
 
-      steps.echo "=======${steps.username}== ============"
+      
 
 
       steps.node("master") {
+        wrap([$class: 'BuildUser']) {
+          username = BUILD_USER.toString();
+        }
+
+        steps.echo "=======${username}== ============"
+
+
         def fullMsg = "== ${project} / ${inventory} ==\n [${level}]: ${msg}. \n 执行人: ${username} \n#DevOps #${project} #${inventory}".toString()
         //steps.echo "=======${fullMsg}===${steps.username}==========="
         steps.sh "/usr/bin/bearychat -t '${fullMsg}' -c 'DevOps,${project}' -m"

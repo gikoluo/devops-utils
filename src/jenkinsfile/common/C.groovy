@@ -47,14 +47,6 @@ echo "targetFile: ${targetFile}"
 echo "autoBuild: ${autoBuild}"
 
 
-node('master') {
-    wrap([$class: 'BuildUser']) {
-      username = BUILD_USER.toString();
-    }
-}
-
-echo "username: ${username}"
-
 //--Part3. workflow for deploy.
 milestone 1
 stage('Copy Target') {
