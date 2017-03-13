@@ -37,6 +37,8 @@ class Remote implements Serializable {
 
           this.unstash (playbook, file, BUILD_ID)
 
+          noticer.send( "testdeploy.ready", "INFO", playbook, "发布准备妥当。发布编号: ${BUILD_ID}" )
+
           if(inventory != "test") {
             script.timeout(time:1, unit:'DAYS') {
               def submitter = "";

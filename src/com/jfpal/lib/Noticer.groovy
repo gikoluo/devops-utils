@@ -15,7 +15,9 @@ class Noticer implements Serializable {
     }
 
     def send(String event, String level="INFO", String project="DevOps", String msg="") {
-      def fullMsg = "==${project}==\n[${level}]: ${msg}"
+      script.echo "=======${level}== ${event} = ${ project } == ${msg} ============"
+
+      def fullMsg = "==${project}==\n[${level}]: ${msg}".toString()
       steps.node("master") {
         steps.sh '/usr/bin/bearychat -t "${fullMsg}" -c "DevOps,${project}" -m'
         if (steps.inventory == "prod") {
