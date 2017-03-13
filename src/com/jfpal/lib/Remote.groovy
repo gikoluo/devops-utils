@@ -31,7 +31,8 @@ class Remote implements Serializable {
      */
     def deployProcess( String playbook, String file, String BUILD_ID="0", ArrayList tags=['update']  ) {
       script.lock(resource: "${playbook}-prod-server", inversePrecedence: true) {
-        
+        def input = null;
+        def currentUser = 'SYSTEM'
         try {
           DEBUG_PRINT "发布开始。项目: ${playbook}, 发布编号: ${BUILD_ID} ; 环境: ${inventory}; 文件: ${file}; Tags: ${tags}； "
 
@@ -49,11 +50,12 @@ class Remote implements Serializable {
 
               noticer.send( "testdeploy.ready", "INFO", inventory, playbook, "发布准备妥当。发布编号: ${BUILD_ID}" )
 
-              input = script.input message: "可以发布 ${inventory} 了吗?", ok: '可以了，发布！', submitter: submitter
+              def input = script.input message: "可以发布 ${inventory} 了吗?", ok: '可以了，发布！', submitter: submitter
+              currentUser = input.getSubmitter()
             }
           }
           
-          noticer.send( "testdeploy.start", "INFO", inventory, playbook, "发布开始。发布编号: ${BUILD_ID}".toString(), input.getSubmitter() )
+          noticer.send( "testdeploy.start", "INFO", inventory, playbook, "发布开始。发布编号: ${BUILD_ID}".toString(),  currentUser)
 
           this.deploy (playbook, file, BUILD_ID, tags)
 
@@ -61,10 +63,11 @@ class Remote implements Serializable {
           noticer.send( "testdeploy.finished", "INFO", inventory, playbook, "发布完成。发布编号: ${BUILD_ID}".toString() )
           
           script.timeout(time:1, unit:'DAYS') {
-            script.input message: "${inventory}测试通过了吗? ", ok: '通过！', submitter: 'qa'
+            def input = script.input message: "${inventory}测试通过了吗? ", ok: '通过！', submitter: 'qa'
+            currentUser = input.getSubmitter()
           }
 
-          noticer.send( "testdeploy.pass", "INFO", inventory, playbook, "测试通过。发布编号: ${BUILD_ID}".toString() )
+          noticer.send( "testdeploy.pass", "INFO", inventory, playbook, "测试通过。发布编号: ${BUILD_ID}".toString(), currentUser )
           
         }
         catch( FlowInterruptedException err ) { //RejectedAccessException
