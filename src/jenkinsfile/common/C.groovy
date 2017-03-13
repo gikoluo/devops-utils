@@ -67,7 +67,7 @@ stage('Copy Target') {
     )
 
     def currentUser = User.current().getFullName();
-    script.echo "==${currentUser}="
+    echo "==${currentUser}="
 
     targetFile = userInput['modules_list'].readLines().join(",")
     force_restart = userInput['force_restart']
