@@ -17,7 +17,7 @@ class Noticer implements Serializable {
     def send(String event, String level="INFO", String inventory="test", String playbook="DevOps/test", String msg="") {
       steps.echo "=======${level}== ${event} = ${ playbook } == ${msg} ============"
 
-      def project = playbook.split()[0]
+      def project = playbook.split("/")[0]
 
       def fullMsg = "== ${project} ==\n[${level}]: ${msg} #DevOps".toString()
       steps.echo "=======${fullMsg}=============="
