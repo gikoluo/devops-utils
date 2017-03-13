@@ -49,7 +49,7 @@ echo "autoBuild: ${autoBuild}"
 
 node('master') {
     wrap([$class: 'BuildUser']) {
-      username = "${BUILD_USER}"
+      username = BUILD_USER.toString();
     }
 }
 
