@@ -63,7 +63,7 @@ class Remote implements Serializable {
           
           script.timeout(time:1, unit:'DAYS') {
             def input = script.input message: "${inventory}测试通过了吗? ", ok: '通过！', submitter: 'qa'
-            currentUser = input.getSubmitter()
+            currentUser = User.current();
           }
 
           noticer.send( "testdeploy.pass", "INFO", inventory, playbook, "测试通过。发布编号: ${BUILD_ID}".toString(), currentUser )
