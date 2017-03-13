@@ -34,7 +34,11 @@ class Remote implements Serializable {
       script.wrap([$class: 'BuildUser']) {
           def user = env.BUILD_USER_ID
 
-          script.echo "=====USER======= ${user} ============"
+          script.node() {
+            script.echo "=====USER======= ${user} ============"
+          }
+
+          
       }
 
       script.lock(resource: "${playbook}-prod-server", inversePrecedence: true) {
