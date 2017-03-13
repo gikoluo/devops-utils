@@ -49,12 +49,11 @@ class Remote implements Serializable {
 
               noticer.send( "testdeploy.ready", "INFO", inventory, playbook, "发布准备妥当。发布编号: ${BUILD_ID}" )
 
-              def input = script.input message: "可以发布 ${inventory} 了吗?", ok: '可以了，发布！', submitter: submitter
-              currentUser = input.getSubmitter()
+              script.input message: "可以发布 ${inventory} 了吗?", ok: '可以了，发布！', submitter: submitter
             }
           }
           
-          noticer.send( "testdeploy.start", "INFO", inventory, playbook, "发布开始。发布编号: ${BUILD_ID}".toString(),  currentUser)
+          noticer.send( "testdeploy.start", "INFO", inventory, playbook, "发布开始。发布编号: ${BUILD_ID}".toString())
 
           this.deploy (playbook, file, BUILD_ID, tags)
 
@@ -62,11 +61,10 @@ class Remote implements Serializable {
           noticer.send( "testdeploy.finished", "INFO", inventory, playbook, "发布完成。发布编号: ${BUILD_ID}".toString() )
           
           script.timeout(time:1, unit:'DAYS') {
-            def input = script.input message: "${inventory}测试通过了吗? ", ok: '通过！', submitter: 'qa'
-            currentUser = User.current();
+            script.input message: "${inventory}测试通过了吗? ", ok: '通过！', submitter: 'qa'
           }
 
-          noticer.send( "testdeploy.pass", "INFO", inventory, playbook, "测试通过。发布编号: ${BUILD_ID}".toString(), currentUser )
+          noticer.send( "testdeploy.pass", "INFO", inventory, playbook, "测试通过。发布编号: ${BUILD_ID}".toString() )
           
         }
         catch( FlowInterruptedException err ) { //RejectedAccessException
