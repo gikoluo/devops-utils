@@ -45,6 +45,7 @@ echo "Deploy ${projectName}/${serviceName} with ${playbook}.yml "
 echo "buildJob: ${buildJob}"
 echo "targetFile: ${targetFile}"
 echo "autoBuild: ${autoBuild}"
+echo "deployer: ${deployer}"
 
 //--Part3. workflow for deploy.
 milestone 1
