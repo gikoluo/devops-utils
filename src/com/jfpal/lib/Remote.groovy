@@ -5,6 +5,7 @@
  *
  */
 package com.jfpal.lib
+import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException;
 
 class Remote implements Serializable {
     def script
