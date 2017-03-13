@@ -46,6 +46,8 @@ echo "buildJob: ${buildJob}"
 echo "targetFile: ${targetFile}"
 echo "autoBuild: ${autoBuild}"
 
+echo "USER: ${env.BUILD_USER}"
+
 //--Part3. workflow for deploy.
 milestone 1
 stage('Copy Target') {
