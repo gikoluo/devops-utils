@@ -31,8 +31,7 @@ class Remote implements Serializable {
     def deployProcess( String playbook, String file, String BUILD_ID="0", ArrayList tags=['update']  ) {
 
       script.lock(resource: "${playbook}-prod-server", inversePrecedence: true) {
-        def level = "INFO"
-
+        
         try {
           DEBUG_PRINT "发布开始。项目: ${playbook}, 发布编号: ${BUILD_ID} ; 环境: ${inventory}; 文件: ${file}; Tags: ${tags}； "
 
@@ -66,7 +65,7 @@ class Remote implements Serializable {
           
         }
         catch( RejectedAccessException ) {
-          def level
+          def level = "INFO"
           if (inventory == "test") {
             level = "INFO"
           }
@@ -79,7 +78,7 @@ class Remote implements Serializable {
           throw err
         }
         catch (err) {
-          noticer.send( "testdeploy.error", level, playbook, "发布失败。发布编号: ${BUILD_ID} ; 环境: ${inventory};".toString() )
+          noticer.send( "testdeploy.error", "WARNING", playbook, "发布失败。发布编号: ${BUILD_ID} ; 环境: ${inventory};".toString() )
           
           DEBUG_PRINT err.toString()
           throw err
