@@ -19,7 +19,7 @@ class Noticer implements Serializable {
 
       def project = playbook.split("/")[0]
 
-      def fullMsg = "== ${project} ==\n[${level}]: ${msg} #DevOps".toString()
+      def fullMsg = "== ${project} ==\n#${inventory} [${level}]: ${msg} #DevOps #${project}".toString()
       steps.echo "=======${fullMsg}=============="
       steps.node("master") {
         steps.sh "/usr/bin/bearychat -t '${fullMsg}' -c 'DevOps,${project}' -m"
