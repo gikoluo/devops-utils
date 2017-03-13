@@ -46,7 +46,10 @@ echo "buildJob: ${buildJob}"
 echo "targetFile: ${targetFile}"
 echo "autoBuild: ${autoBuild}"
 
-echo "USER: ${env.BUILD_USER}"
+THIS_USER= cmd "curl –silent $BUILD_URL | xml_grep –text_only userName"
+
+echo "THIS_USER: ${THIS_USER}"
+
 
 //--Part3. workflow for deploy.
 milestone 1
