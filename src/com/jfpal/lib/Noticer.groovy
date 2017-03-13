@@ -14,22 +14,13 @@ class Noticer implements Serializable {
       this.steps = steps
     }
 
-    def send(String event, String level="INFO", String inventory="test", String playbook="DevOps/test", String msg="") {
+    def send(String event, String level="INFO", String inventory="test", String playbook="DevOps/test", String msg="", String actor="SYSTEM") {
       steps.echo "=======${level}== ${event} = ${ playbook } == ${msg} ============"
 
       def project = playbook.split("/")[0]
-      def username = ""; // = env.BUILD_USER
-
 
       steps.node("master") {
-        // steps.wrap([$class: 'BuildUser']) {
-        //   username = step.sh echo "${env.BUILD_USER}"
-        // }
-
-        // steps.echo "=======${username}== ============"
-
-
-        def fullMsg = "== ${project} / ${inventory} ==\n [${level}]: ${msg}. \n 执行人: ${username} \n#DevOps #${project} #${inventory}".toString()
+        def fullMsg = "== ${project} / ${inventory} ==\n [${level}]: ${msg}. \n 执行人: ${actor} \n#DevOps #${project} #${inventory}".toString()
         //steps.echo "=======${fullMsg}===${steps.username}==========="
         steps.sh "/usr/bin/bearychat -t '${fullMsg}' -c 'DevOps,${project}' -m"
         if (inventory == "prod") {

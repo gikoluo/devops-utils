@@ -56,11 +56,11 @@ class Remote implements Serializable {
 
               noticer.send( "testdeploy.ready", "INFO", inventory, playbook, "发布准备妥当。发布编号: ${BUILD_ID}" )
 
-              script.input message: "可以发布 ${inventory} 了吗?", ok: '可以了，发布！', submitter: submitter
+              input = script.input message: "可以发布 ${inventory} 了吗?", ok: '可以了，发布！', submitter: submitter
             }
           }
           
-          noticer.send( "testdeploy.start", "INFO", inventory, playbook, "发布开始。发布编号: ${BUILD_ID}".toString() )
+          noticer.send( "testdeploy.start", "INFO", inventory, playbook, "发布开始。发布编号: ${BUILD_ID}".toString(), input.getSubmitter() )
 
           this.deploy (playbook, file, BUILD_ID, tags)
 
