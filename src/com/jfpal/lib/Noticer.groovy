@@ -26,7 +26,7 @@ class Noticer implements Serializable {
 
 
       steps.node("master") {
-        wrap([$class: 'BuildUser']) {
+        steps.wrap([$class: 'BuildUser']) {
           username = BUILD_USER.toString();
         }
 
