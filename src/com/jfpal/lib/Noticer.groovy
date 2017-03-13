@@ -22,6 +22,7 @@ class Noticer implements Serializable {
 
       steps.node("master") {
         wrap([$class: 'BuildUser']) {
+          step.sh echo "${BUILD_USER}"
           username = "${BUILD_USER}"
         }
         def fullMsg = "== ${project} / ${inventory} ==\n [${level}]: ${msg}. \n 执行人: ${username} \n#DevOps #${project} #${inventory}".toString()
