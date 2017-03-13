@@ -46,7 +46,11 @@ echo "buildJob: ${buildJob}"
 echo "targetFile: ${targetFile}"
 echo "autoBuild: ${autoBuild}"
 
+wrap([$class: 'BuildUser']) {
+ // https://wiki.jenkins-ci.org/display/JENKINS/Build+User+Vars+Plugin variables available inside this block
 
+  sh 'echo ${BUILD_USER}'
+}
 
 //--Part3. workflow for deploy.
 milestone 1
@@ -77,7 +81,10 @@ stage('Copy Target') {
 //     targetFile = tmp.readLines().join(",")
 
     node('master') {
-        def THIS_USER= sh "curl -silent $BUILD_URL | xml_grep -text_only userName"
+
+        def THIS_USER="$(wget -nv -no-proxy $BUILD_URL/api/xml?xpath=//userName/text() -O -)"
+
+        // THIS_USER= sh "curl -silent $BUILD_URL | xml_grep -text_only userName"
         echo "THIS_USER: ${THIS_USER}"
 
         utils.copyTarget(buildJob, targetFile, BUILD_ID)
