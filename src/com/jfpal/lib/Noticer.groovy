@@ -14,14 +14,14 @@ class Noticer implements Serializable {
       this.steps = steps
     }
 
-    def send(String event, String level="INFO", String project="DevOps", String msg="") {
+    def send(String event, String level="INFO", String inventory="test", String project="DevOps", String msg="") {
       steps.echo "=======${level}== ${event} = ${ project } == ${msg} ============"
 
       def fullMsg = "==${project}==[${level}]: ${msg}".toString()
       steps.echo "=======${fullMsg}=============="
       steps.node("master") {
         steps.sh "/usr/bin/bearychat -t '${fullMsg}' -c 'DevOps,${project}' -m"
-        if (steps.inventory == "prod") {
+        if (inventory == "prod") {
           steps.sh "/usr/bin/bearychat -t '${fullMsg}' -c '管理组' -m"
         }
       }

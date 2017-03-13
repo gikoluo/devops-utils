@@ -37,7 +37,7 @@ class Remote implements Serializable {
 
           this.unstash (playbook, file, BUILD_ID)
 
-          noticer.send( "testdeploy.ready", "INFO", playbook, "发布准备妥当。发布编号: ${BUILD_ID}" )
+          noticer.send( "testdeploy.ready", "INFO", inventory, playbook, "发布准备妥当。发布编号: ${BUILD_ID}" )
 
           if(inventory != "test") {
             script.timeout(time:1, unit:'DAYS') {
@@ -52,18 +52,18 @@ class Remote implements Serializable {
             }
           }
           
-          noticer.send( "testdeploy.start", "INFO", playbook, "发布开始。发布编号: ${BUILD_ID}".toString() )
+          noticer.send( "testdeploy.start", "INFO", inventory, playbook, "发布开始。发布编号: ${BUILD_ID}".toString() )
 
           this.deploy (playbook, file, BUILD_ID, tags)
 
           //noticer.send( "BUILD_ID: ${BUILD_ID} to ${inventory} deploy success".toString(), "INFO"  )
-          noticer.send( "testdeploy.finished", "INFO", playbook, "发布完成。发布编号: ${BUILD_ID}".toString() )
+          noticer.send( "testdeploy.finished", "INFO", inventory, playbook, "发布完成。发布编号: ${BUILD_ID}".toString() )
           
           script.timeout(time:1, unit:'DAYS') {
             script.input message: "${inventory}测试通过了吗? ", ok: '通过！', submitter: 'qa'
           }
 
-          noticer.send( "testdeploy.pass", "INFO", playbook, "测试通过。发布编号: ${BUILD_ID}".toString() )
+          noticer.send( "testdeploy.pass", "INFO", inventory, playbook, "测试通过。发布编号: ${BUILD_ID}".toString() )
           
         }
         catch( RejectedAccessException ) {
@@ -74,13 +74,13 @@ class Remote implements Serializable {
           else {
             level = "WARNING"
           }
-          noticer.send( "testdeploy.rejected", level, playbook, "发布拒绝。发布编号: ${BUILD_ID} ; 环境: ${inventory};".toString() )
+          noticer.send( "testdeploy.rejected", level, inventory, playbook, "发布拒绝。发布编号: ${BUILD_ID} ; 环境: ${inventory};".toString() )
           
           DEBUG_PRINT err.toString()
           throw err
         }
         catch (err) {
-          noticer.send( "testdeploy.error", "WARNING", playbook, "发布失败。发布编号: ${BUILD_ID} ; 环境: ${inventory};".toString() )
+          noticer.send( "testdeploy.error", "WARNING", inventory, playbook, "发布失败。发布编号: ${BUILD_ID} ; 环境: ${inventory};".toString() )
           
           DEBUG_PRINT err.toString()
           throw err
