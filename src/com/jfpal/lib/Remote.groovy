@@ -25,8 +25,6 @@ class Remote implements Serializable {
       script.echo "============ ${msg} ============"
     }
 
-    
-
     /**
      * Deploy Entry
      */
@@ -34,8 +32,10 @@ class Remote implements Serializable {
 
       script.lock(resource: "${playbook}-prod-server", inversePrecedence: true) {
         try {
-          DEBUG_PRINT "DeployProcess ${file} to ${inventory} with playbook ${playbook} tagged by ${tags}, BUILD_ID: ${BUILD_ID}."
-          noticer.send( "Deploy Start. Env: ${inventory}; File: ${file}; Playbook: ${playbook}. BUILD_ID: ${BUILD_ID}.".toString(), "INFO"  )
+          DEBUG_PRINT "发布开始。项目: ${playbook}, 发布编号: ${BUILD_ID} ; 环境: ${inventory}; 文件: ${file}; Tags: ${tags}； "
+          def level = "INFO"
+          
+
           this.unstash (playbook, file, BUILD_ID)
 
           if(inventory != "test") {
@@ -51,21 +51,36 @@ class Remote implements Serializable {
             }
           }
           
+          noticer.send( "testdeploy.start", "INFO", playbook, "发布开始。发布编号: ${BUILD_ID}".toString() )
+
           this.deploy (playbook, file, BUILD_ID, tags)
 
-          noticer.send( "BUILD_ID: ${BUILD_ID} to ${inventory} deploy success".toString(), "INFO"  )
+          //noticer.send( "BUILD_ID: ${BUILD_ID} to ${inventory} deploy success".toString(), "INFO"  )
+          noticer.send( "testdeploy.finished", "INFO", playbook, "发布完成。发布编号: ${BUILD_ID}".toString() )
           
           script.timeout(time:1, unit:'DAYS') {
             script.input message: "${inventory}测试通过了吗? ", ok: '通过！', submitter: 'qa'
-          } 
+          }
+
+          noticer.send( "testdeploy.pass", "INFO", playbook, "测试通过。发布编号: ${BUILD_ID}".toString() )
+          
         }
         catch( RejectedAccessException ) {
-          noticer.send( "BUILD_ID: ${BUILD_ID} to ${inventory} Rejected".toString() + err.toString(), "ERROR" )
+          def level
+          if (inventory == "test") {
+            level = "INFO"
+          }
+          else {
+            level = "WARNING"
+          }
+          noticer.send( "testdeploy.rejected", level, playbook, "发布拒绝。发布编号: ${BUILD_ID} ; 环境: ${inventory};".toString() )
+          
           DEBUG_PRINT err.toString()
           throw err
         }
         catch (err) {
-          noticer.send( "BUILD_ID: ${BUILD_ID} to ${inventory} Error".toString() + err.toString(), "ERROR" )
+          noticer.send( "testdeploy.error", level, playbook, "发布失败。发布编号: ${BUILD_ID} ; 环境: ${inventory};".toString() )
+          
           DEBUG_PRINT err.toString()
           throw err
         }
@@ -82,7 +97,7 @@ class Remote implements Serializable {
       script.node("ansible-${inventory}") {
         DEBUG_PRINT "${inventory} deploy started"
 
-        def extraString = " -e TARGET_FILE=/tmp/${playbook}/${BUILD_ID}/${file}"
+        def extraString = " -e FILES_PATH=/tmp/${playbook}/${BUILD_ID} -e TARGET_FILE=${file}"
 
         if (tags.size() > 0) {
           extraString += " --tags ${tags.join(',')}"
