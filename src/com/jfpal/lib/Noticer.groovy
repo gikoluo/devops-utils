@@ -23,8 +23,9 @@ class Noticer implements Serializable {
         def fullMsg = "== ${project} / ${inventory} ==\n [${level}]: ${msg}. \n #DevOps #${project} #${inventory}".toString()
         steps.sh "/usr/bin/bearychat -t '${fullMsg}' -c 'DevOps,${project}' -m"
         if (inventory == "prod") {
-          steps.sh "/usr/bin/bearychat -t '${fullMsg}' -c '管理组' -m"
-          steps.sh "/usr/bin/wechatnotify -t '${fullMsg}' -c '管理组' -m"
+          String gr = new String('管理组', "UTF-8");
+          steps.sh "/usr/bin/bearychat -t '${fullMsg}' -c '${gr}' -m"
+          steps.sh "/usr/bin/wechatnotify -t '${fullMsg}' -c '${gr}' -m"
         }
       }
     }
