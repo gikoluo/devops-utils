@@ -66,7 +66,7 @@ class Remote implements Serializable {
           noticer.send( "testdeploy.pass", "INFO", inventory, playbook, "测试通过。发布编号: ${BUILD_ID}".toString() )
           
         }
-        catch( RejectedAccessException ) {
+        catch( FlowInterruptedException ) { //RejectedAccessException
           def level = "INFO"
           if (inventory == "test") {
             level = "INFO"
@@ -74,13 +74,13 @@ class Remote implements Serializable {
           else {
             level = "WARNING"
           }
-          noticer.send( "testdeploy.rejected", level, inventory, playbook, "发布拒绝。发布编号: ${BUILD_ID} ; 环境: ${inventory};".toString() )
+          noticer.send( "testdeploy.rejected", level, inventory, playbook, "发布拒绝。发布编号: ${BUILD_ID}".toString() )
           
           DEBUG_PRINT err.toString()
           throw err
         }
         catch (err) {
-          noticer.send( "testdeploy.error", "WARNING", inventory, playbook, "发布失败。发布编号: ${BUILD_ID} ; 环境: ${inventory};".toString() )
+          noticer.send( "testdeploy.error", "WARNING", inventory, playbook, "发布失败。发布编号: ${BUILD_ID}".toString() )
           
           DEBUG_PRINT err.toString()
           throw err
