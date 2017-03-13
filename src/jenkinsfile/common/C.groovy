@@ -48,7 +48,7 @@ echo "autoBuild: ${autoBuild}"
 
 
 node('master') {
-    steps.wrap([$class: 'BuildUser']) {
+    wrap([$class: 'BuildUser']) {
       username = "${BUILD_USER}"
     }
 }
@@ -64,9 +64,9 @@ stage('Copy Target') {
     }
 
     def userInput = input(
-        id: 'Modules_list_input', 
-        message: '请选择上线的模块列表', 
-        ok: '确认', 
+        id: 'Modules_list_input',
+        message: '请选择上线的模块列表',
+        ok: '确认',
         parameters: [
           text(defaultValue: '', description: '上线Modules列表。每行一个。', name: 'modules_list'),
           booleanParam(defaultValue: false, description: '强制重启模式。 不选则动态内存刷新', name: 'force_restart')
@@ -84,14 +84,6 @@ stage('Copy Target') {
 //     targetFile = tmp.readLines().join(",")
 
     node('master') {
-
-
-
-        //def THIS_USER="$(wget -nv -no-proxy $BUILD_URL/api/xml?xpath=//userName/text() -O -)"
-
-        // THIS_USER= sh "curl -silent $BUILD_URL | xml_grep -text_only userName"
-        //echo "THIS_USER: ${THIS_USER}"
-
         utils.copyTarget(buildJob, targetFile, BUILD_ID)
     }
 }
