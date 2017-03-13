@@ -21,7 +21,7 @@ class Noticer implements Serializable {
       def username = ""; // = env.BUILD_USER
 
       steps.node("master") {
-        wrap([$class: 'BuildUser']) {
+        steps.wrap([$class: 'BuildUser']) {
           steps.sh echo "${BUILD_USER}"
           //username = "${BUILD_USER}"
         }
