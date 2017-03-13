@@ -51,8 +51,7 @@ echo "autoBuild: ${autoBuild}"
 //--Part3. workflow for deploy.
 milestone 1
 stage('Copy Target') {
-    def THIS_USER= sh "curl –silent $BUILD_URL | xml_grep –text_only userName"
-    echo "THIS_USER: ${THIS_USER}"
+    
     if(autoBuild) {
         build job: buildJob
     }
@@ -78,6 +77,9 @@ stage('Copy Target') {
 //     targetFile = tmp.readLines().join(",")
 
     node('master') {
+        def THIS_USER= sh "curl –silent $BUILD_URL | xml_grep –text_only userName"
+        echo "THIS_USER: ${THIS_USER}"
+
         utils.copyTarget(buildJob, targetFile, BUILD_ID)
     }
 }
