@@ -49,7 +49,7 @@ class Remote implements Serializable {
               }
 
               noticer.send( "testdeploy.ready", "INFO", inventory, playbook, "发布准备妥当。发布编号: ${BUILD_ID}" )
-              
+
               script.input message: "可以发布 ${inventory} 了吗?", ok: '可以了，发布！', submitter: submitter
 
               
@@ -78,7 +78,7 @@ class Remote implements Serializable {
           else {
             level = "WARNING"
           }
-          def message = err.getMessage()
+          def message = err.getMessage() + err.getResult()
           noticer.send( "testdeploy.rejected", level, inventory, playbook, "发布拒绝。发布编号: ${BUILD_ID} \n ${message}".toString() )
           
           DEBUG_PRINT err.toString()
