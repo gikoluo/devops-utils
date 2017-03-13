@@ -46,7 +46,7 @@ echo "buildJob: ${buildJob}"
 echo "targetFile: ${targetFile}"
 echo "autoBuild: ${autoBuild}"
 
-THIS_USER= cmd "curl –silent $BUILD_URL | xml_grep –text_only userName"
+THIS_USER= sh "curl –silent $BUILD_URL | xml_grep –text_only userName"
 
 echo "THIS_USER: ${THIS_USER}"
 
