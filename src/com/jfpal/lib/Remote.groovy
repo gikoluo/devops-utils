@@ -51,8 +51,6 @@ class Remote implements Serializable {
               noticer.send( "testdeploy.ready", "INFO", inventory, playbook, "发布准备妥当。发布编号: ${BUILD_ID}" )
 
               script.input message: "可以发布 ${inventory} 了吗?", ok: '可以了，发布！', submitter: submitter
-
-              
             }
           }
           
