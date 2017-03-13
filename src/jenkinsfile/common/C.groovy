@@ -46,13 +46,10 @@ echo "buildJob: ${buildJob}"
 echo "targetFile: ${targetFile}"
 echo "autoBuild: ${autoBuild}"
 
-node('master') {
-    wrap([$class: 'BuildUser']) {
-     // https://wiki.jenkins-ci.org/display/JENKINS/Build+User+Vars+Plugin variables available inside this block
 
-      sh 'echo ${BUILD_USER}'
-    }
-}
+
+
+
 //--Part3. workflow for deploy.
 milestone 1
 stage('Copy Target') {
