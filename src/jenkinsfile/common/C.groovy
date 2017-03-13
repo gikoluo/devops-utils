@@ -48,9 +48,6 @@ echo "autoBuild: ${autoBuild}"
 
 
 
-echo "THIS_USER: ${THIS_USER}"
-
-
 //--Part3. workflow for deploy.
 milestone 1
 stage('Copy Target') {
