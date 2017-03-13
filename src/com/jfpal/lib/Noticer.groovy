@@ -20,7 +20,7 @@ class Noticer implements Serializable {
       def project = playbook.split("/")[0]
       def username = ""; // = env.BUILD_USER
 
-      steps.echo "=======${steps.env}========"
+      steps.echo "=======${env}========"
 
       
 
