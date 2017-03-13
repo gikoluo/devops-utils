@@ -18,7 +18,7 @@ def targetFile = env.TARGET_FILE     //Build target.
 def autoBuild  = true               //set it to true if you like to build the build job manually.
 def playbook = "";                   //the playbook script file to deploy target, default is "${projectName}/${serviceName}"
 def tags = ["update"]
-
+def username = "";
 
 
 if(env.PLAYBOOK) {
@@ -47,8 +47,13 @@ echo "targetFile: ${targetFile}"
 echo "autoBuild: ${autoBuild}"
 
 
+node('master') {
+    steps.wrap([$class: 'BuildUser']) {
+      username = "${BUILD_USER}"
+    }
+}
 
-
+echo "username: ${username}"
 
 //--Part3. workflow for deploy.
 milestone 1
