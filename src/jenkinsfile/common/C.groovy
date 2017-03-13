@@ -82,10 +82,10 @@ stage('Copy Target') {
 
     node('master') {
 
-        def THIS_USER="$(wget -nv -no-proxy $BUILD_URL/api/xml?xpath=//userName/text() -O -)"
+        //def THIS_USER="$(wget -nv -no-proxy $BUILD_URL/api/xml?xpath=//userName/text() -O -)"
 
         // THIS_USER= sh "curl -silent $BUILD_URL | xml_grep -text_only userName"
-        echo "THIS_USER: ${THIS_USER}"
+        //echo "THIS_USER: ${THIS_USER}"
 
         utils.copyTarget(buildJob, targetFile, BUILD_ID)
     }
