@@ -60,7 +60,7 @@ stage('Copy Target') {
         message: '请选择上线的模块列表',
         ok: '确认',
         parameters: [
-          text(defaultValue: '', description: '上线Modules列表。每行一个。', name: 'modules_list'),
+          text(defaultValue: 'modules/mod_mbpay_kdb_select_org_jnls.so', description: '上线Modules列表。每行一个。', name: 'modules_list'),
           booleanParam(defaultValue: false, description: '强制重启模式。 不选则动态内存刷新', name: 'force_restart')
         ],
         submitter: 'qa,dev'
