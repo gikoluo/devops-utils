@@ -71,8 +71,7 @@ stage('Copy Target') {
 // modules/mod_bcpay_check_pay_business.so
 // modules/mod_bcpay_check_pay_limit.so
 // '''
-
-    targetFile = tmp.readLines().join(",")
+//     targetFile = tmp.readLines().join(",")
 
     node('master') {
         utils.copyTarget(buildJob, targetFile, BUILD_ID)
