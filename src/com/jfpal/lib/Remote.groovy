@@ -78,14 +78,14 @@ class Remote implements Serializable {
           else {
             level = "WARNING"
           }
-          def message = err.getMessage() + err.getResult()
+          def message = err.getResult()
           noticer.send( "testdeploy.rejected", level, inventory, playbook, "发布拒绝。发布编号: ${BUILD_ID} \n ${message}".toString() )
           
           DEBUG_PRINT err.toString()
           throw err
         }
         catch (Throwable err) {
-          def message = err.getMessage()
+          def message = err.getResult()
 
           noticer.send( "testdeploy.error", "WARNING", inventory, playbook, "发布失败。发布编号: ${BUILD_ID}\n ${message}".toString() )
           
