@@ -15,7 +15,7 @@ class Noticer implements Serializable {
     }
 
     def send(String event, String level="INFO", String project="DevOps", String msg="") {
-      script.echo "=======${level}== ${event} = ${ project } == ${msg} ============"
+      steps.echo "=======${level}== ${event} = ${ project } == ${msg} ============"
 
       def fullMsg = "==${project}==\n[${level}]: ${msg}".toString()
       steps.node("master") {
