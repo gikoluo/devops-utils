@@ -31,6 +31,12 @@ class Remote implements Serializable {
      */
     def deployProcess( String playbook, String file, String BUILD_ID="0", ArrayList tags=['update']  ) {
 
+      wrap([$class: 'BuildUser']) {
+          def user = env.BUILD_USER_ID
+
+          script.echo "=====USER======= ${user} ============"
+      }
+
       script.lock(resource: "${playbook}-prod-server", inversePrecedence: true) {
         
         try {

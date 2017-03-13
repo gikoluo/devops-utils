@@ -20,17 +20,13 @@ class Noticer implements Serializable {
       def project = playbook.split("/")[0]
       def username = ""; // = env.BUILD_USER
 
-      steps.echo "=======${env}========"
-
-      
-
 
       steps.node("master") {
-        steps.wrap([$class: 'BuildUser']) {
-          username = step.sh echo "${env.BUILD_USER}"
-        }
+        // steps.wrap([$class: 'BuildUser']) {
+        //   username = step.sh echo "${env.BUILD_USER}"
+        // }
 
-        steps.echo "=======${username}== ============"
+        // steps.echo "=======${username}== ============"
 
 
         def fullMsg = "== ${project} / ${inventory} ==\n [${level}]: ${msg}. \n 执行人: ${username} \n#DevOps #${project} #${inventory}".toString()
