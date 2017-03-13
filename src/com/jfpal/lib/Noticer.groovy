@@ -19,9 +19,9 @@ class Noticer implements Serializable {
 
       def fullMsg = "==${project}==\n[${level}]: ${msg}".toString()
       steps.node("master") {
-        steps.sh '/usr/bin/bearychat -t "${fullMsg}" -c "DevOps,${project}" -m'
+        steps.sh "/usr/bin/bearychat -t '${fullMsg}' -c 'DevOps,${project}' -m"
         if (steps.inventory == "prod") {
-          steps.sh '/usr/bin/bearychat -t "${fullMsg}" -c "管理组" -m'
+          steps.sh "/usr/bin/bearychat -t '${fullMsg}' -c '管理组' -m"
         }
       }
     }
