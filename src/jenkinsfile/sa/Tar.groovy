@@ -51,7 +51,7 @@ stage('Deploy Test') {
 }
 
 stage('UAT') {
-    lock(resource: "${playbook}-UAT", inversePrecedence: true) {
+    lock(resource: "${target}-UAT", inversePrecedence: true) {
         milestone 3
         timeout(time:1, unit:'DAYS') {
             input id: 'pushToUAT', message: "Test环境正常了么？可以提交 UAT 了吗?", ok: '准备好了，发布！', submitter: 'sa'
@@ -73,7 +73,7 @@ stage('UAT') {
 
 milestone 4
 stage ('Production') {
-    lock(resource: "${playbook}-Production", inversePrecedence: true) {
+    lock(resource: "${target}-Production", inversePrecedence: true) {
         timeout(time:1, unit:'DAYS') {
             input message: "可以提交 Prod 了吗?", ok: '准备好了，发布！', submitter: 'sa'
         }
