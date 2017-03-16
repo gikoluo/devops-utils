@@ -27,11 +27,9 @@ class Noticer implements Serializable {
           steps.sh "/usr/bin/bearychat -t '${fullMsg}' -c '${gr}' -m"
           steps.sh "/usr/bin/wechatnotify -t '${fullMsg}' -c '${gr}' -m"
         }
-        if (inventory == "test") {
-          String gr = new String('管理组', UTF_8);
-          steps.sh "/usr/bin/bearychat -t '${fullMsg}' -c '${gr}' -m"
-          steps.sh "/usr/bin/wechatnotify -t '${fullMsg}' -c '${gr}' -m"
-        }
+        String gr = new String('管理组', UTF_8);
+        steps.sh "/usr/bin/bearychat -t '${fullMsg}' -c '${gr}' -m"
+        steps.sh "/usr/bin/wechatnotify -t '${fullMsg}' -c '${gr}' -m"
       }
     }
 }
