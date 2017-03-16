@@ -15,6 +15,7 @@ def projectName = env.PROJECT_NAME   //Project name, Usually it is the name of j
 def serviceName = env.SERVICE_NAME   //Service name. Usually it is the process name running in the server.
 def buildJob    = env.BUILD_JOB      //Build job in jenkins. 
 def targetFile = env.TARGET_FILE     //Build target.
+def deployConfig = env.DEPLOY_CONFIG     //Automatic deploy Config
 def autoBuild  = true               //set it to true if you like to build the build job manually.
 def playbook = "";                   //the playbook script file to deploy target, default is "${projectName}/${serviceName}"
 def tags = ["update"]

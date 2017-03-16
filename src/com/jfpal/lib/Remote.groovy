@@ -160,23 +160,26 @@ class Remote implements Serializable {
     }
 
     def deployAnsible( String file ) {
-      DEBUG_PRINT "deploy ${file} to ${inventory} without playbook."
-      def playbook = "ansible"
+      deployTarGz(file, "ansible")
+    }
+
+    def deployTarGz( String file, String target) {
+      DEBUG_PRINT "deploy ${file} to ${inventory} with target."
 
       def filename = file.substring(file.lastIndexOf("/") + 1, file.length());
-      script.sh ('whoami')
 
       def id = UUID.randomUUID().toString()
 
-      script.sh  "mkdir -p /tmp/${playbook}/${id}/"
+      script.sh  "mkdir -p /tmp/${target}/${id}/"
 
-      script.dir("/tmp/${playbook}/${id}/") {
+      script.dir("/tmp/${target}/${id}/") {
         script.deleteDir()
         script.unstash 'targetArchive'
       }
       
-      script.sh "mkdir -p ~/rhasta/; cd ~/rhasta/ && tar zxf /tmp/${playbook}/${id}/${file}"
+      script.sh "mkdir -p ~/rhasta/; cd ~/rhasta/ && tar zxf /tmp/${target}/${id}/${file}"
 
-      script.sh  "rm -r /tmp/${playbook}/${id}/"
+      script.sh  "rm -r /tmp/${target}/${id}/"
     }
+
 }
