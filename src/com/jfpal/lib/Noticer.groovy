@@ -23,11 +23,11 @@ class Noticer implements Serializable {
         def fullMsg = "== ${project} / ${inventory} ==\n [${level}]: ${msg}. \n #DevOps #${project} #${inventory}".toString()
         steps.sh "/usr/bin/bearychat -t '${fullMsg}' -c 'DevOps,${project}' -m"
         if (inventory == "prod") {
-          String gr = new String('管理组', UTF_8);
+          String gr = Charset.forName("UTF-8").encode('管理组');
           steps.sh "/usr/bin/bearychat -t '${fullMsg}' -c '${gr}' -m"
           steps.sh "/usr/bin/wechatnotify -t '${fullMsg}' -c '${gr}' -m"
         }
-        String gr = new String('管理组', UTF_8);
+        String gr = Charset.forName("UTF-8").encode('管理组');
         steps.sh "/usr/bin/bearychat -t '${fullMsg}' -c '${gr}' -m"
         steps.sh "/usr/bin/wechatnotify -t '${fullMsg}' -c '${gr}' -m"
       }
