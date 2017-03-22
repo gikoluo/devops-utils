@@ -62,8 +62,11 @@ stage('Setup') {
         check_vars = extra_vars + [ "--list-hosts" ]
         remote.deploySetup(playbook, check_vars)
 
-        input id: 'ex', message: "在任务输出中检查确认影响的IP列表，如无问题，点确认执行", ok: '确认执行', submitter: 'sa,scm'
+        if (inventory != "test") {
+            input id: 'ex', message: "在任务输出中检查确认影响的IP列表，如无问题，点确认执行", ok: '确认执行', submitter: 'sa,scm'
+        }
 
+        
         if (task == "installkey") {
             node("ansible-${inventory}") {
                 def inventoryFile = "/tmp/hosts_$BUILD_ID"
