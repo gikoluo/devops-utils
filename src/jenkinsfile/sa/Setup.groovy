@@ -19,17 +19,13 @@ stage('Parameters') {
     echo "============ ${inventory} ============" 
     echo "============ ${tasks} ============" 
     echo "============ ${machines_limit} ============" 
+    echo "============ ${customize_playbook} ============" 
     echo "==== ${installkey_password} ==="
-    //echo "============ ${userInput['tasks']} ============" 
-    //echo "============ ${userInput['machines_limit']} ============" 
-    //echo "============ ${userInput['inventory']} ============" 
-
-
 }
 
 
 milestone 2
-stage('Check') {
+stage('Setup') {
     remote = new Remote(steps, inventory)
     def arr = tasks.split(",")
 
@@ -43,7 +39,6 @@ stage('Check') {
         extra_vars << "-l ${machines_limit}"
         switch (task) {
             case "installkey":
-                //ansible-playbook setups/10-installkey.yml -i "${inventory}" -l "${machines_limit}" -kK
                 playbook = "setups/10-installkey";
                 break;
             case "setup":
@@ -55,8 +50,11 @@ stage('Check') {
             case "jdk8": 
                 playbook = "setups/01-oracle-jdk8";
                 break;
+            case "customize":
+                playbook = customize_playbook;
+                break;
             default: 
-                echo "No defined action for ${it}";
+                echo "No defined action for ${task}";
         }
         check_vars = extra_vars + [ "--list-hosts" ]
         remote.deploySetup(playbook, check_vars)
@@ -64,45 +62,18 @@ stage('Check') {
         input id: 'ex', message: "在任务输出中检查确认影响的IP列表，如无问题，点确认执行", ok: '确认执行', submitter: 'sa,scm'
 
         if (task == "installkey") {
-            extra_vars << "ansible_sudo_pass=${installkey_password}"
-            extra_vars << "ansible_ssh_pass=${installkey_password}"
+            def inventoryFile = "/tmp/hosts_$BUILD_ID"
+            new File(inventoryFile).withWriter { out ->
+                out.println "[installkeyhost]"
+                out.println "${machines_limit}"
+            }
+            extra_vars << "-i ${inventoryFile}"
+            extra_vars << "-e ansible_sudo_pass=${installkey_password}"
+            extra_vars << "-e ansible_ssh_pass=${installkey_password}"
         }
         remote.deploySetup(playbook, extra_vars)
-
     }
-//installkey,setup,jdk7,jdk8
-//ansible-playbook  -i $inventory -l "openpay || dspay"
-
-// ansible-playbook setups/01-oracle-jdk7.yml -i $inventory -l "openpay || dspay"
-
-// ansible-playbook sos/70-restart-supervisor.yml -i $inventory -l "openpay || dspay” -e “hosts=openpay || dspay"
-// ansible-playbook sos/71-remove-remi-repo.yml -i $inventory -l "openpay || dspay" -e "hosts=openpay || dspay"
-
 }
-
-
-// milestone 3
-// stage('Setup') {
-//     remote = new Remote(steps, inventory)
-//     tasks.split(',').each {
-//       //installkey,setup,jdk7,jdk8
-//       //ansible-playbook  -i $inventory -l "openpay || dspay"
-
-// // ansible-playbook setups/01-oracle-jdk7.yml -i $inventory -l "openpay || dspay"
-
-// // ansible-playbook sos/70-restart-supervisor.yml -i $inventory -l "openpay || dspay” -e “hosts=openpay || dspay"
-// // ansible-playbook sos/71-remove-remi-repo.yml -i $inventory -l "openpay || dspay" -e "hosts=openpay || dspay"
-
-        
-        
-
-//       remote.deploySetup(playbook, tags)
-//     }
-    
-    
-// }
-
-
 
 
 
