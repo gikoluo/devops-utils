@@ -193,7 +193,7 @@ class Remote implements Serializable {
         DEBUG_PRINT "${inventory} deployed end"
       }
 
-      DEBUG_PRINT "setup Check ${playbook} in ${inventory} with ${extraParameters}."
+      DEBUG_PRINT "setup Check ${playbook} in ${inventory}"
     }
 
 }
