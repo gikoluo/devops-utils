@@ -20,7 +20,6 @@ stage('Parameters') {
     echo "============ ${tasks} ============" 
     echo "============ ${machines_limit} ============" 
     echo "============ ${customize_playbook} ============" 
-    echo "==== ${installkey_password} ==="
 }
 
 
@@ -73,8 +72,8 @@ stage('Setup') {
                 def inventoryFile = "/tmp/hosts_$BUILD_ID"
                 sh "echo '' > ${inventoryFile}"
                 sh "echo '[installkeyhost]' >> ${inventoryFile}"
+                //add sh -e to avoid the password output in console.log
                 sh "#!/bin/sh -e \n echo '${machines_limit} ansible_ssh_pass=${installkey_password} ansible_sudo_pass=${installkey_password}' >> ${inventoryFile}"
-                sh "cat ${inventoryFile}"
                 extra_vars << "-i ${inventoryFile}"
             }
             
