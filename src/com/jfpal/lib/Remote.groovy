@@ -196,4 +196,15 @@ class Remote implements Serializable {
       DEBUG_PRINT "setup Check ${playbook} in ${inventory}"
     }
 
+
+    def reLink(String project, String service, String runname, String workspace, String rollbackTo) {
+      script.sh  "[ ! -d ${workspace} ] && echo 'workspace directory ${workspace} is not exists' && exit -1"
+      script.dir("${workspace}") {
+        script.sh  "[ ! -d releases/${rollbackTo} ] && echo 'Rollback directory releases/${rollbackTo} is not exists' && exit -1"
+        script.sh  "[ ! -L current ] && echo 'Current path is not symlink' &&  exit -1"
+
+        script.sh  "rm current && ln -s releases/${rollbackTo} current"
+        script.sh  "sudo steve -s ${runname} -k restart"
+      }
+    }
 }
