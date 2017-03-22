@@ -69,6 +69,7 @@ stage('Setup') {
         
         if (task == "installkey") {
             node("ansible-${inventory}") {
+                sh "ip a"
                 def inventoryFile = "/tmp/hosts_$BUILD_ID"
                 PrintWriter writer = new PrintWriter(inventoryFile, "UTF-8");
                 writer.println("[installkeyhost]");
