@@ -73,7 +73,7 @@ stage('Setup') {
                 def inventoryFile = "/tmp/hosts_$BUILD_ID"
                 sh "echo '' > ${inventoryFile}"
                 sh "echo '[installkeyhost]' >> ${inventoryFile}"
-                sh "echo '${machines_limit} ansible_ssh_pass=${installkey_password} ansible_sudo_pass=${installkey_password}' >> ${inventoryFile}"
+                sh "#!/bin/sh -e \n echo '${machines_limit} ansible_ssh_pass=${installkey_password} ansible_sudo_pass=${installkey_password}' >> ${inventoryFile}"
                 sh "cat ${inventoryFile}"
                 extra_vars << "-i ${inventoryFile}"
             }
