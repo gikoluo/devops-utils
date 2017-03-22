@@ -182,4 +182,18 @@ class Remote implements Serializable {
       script.sh  "rm -r /tmp/${target}/${id}/"
     }
 
+    def deploySetup(String playbook, ArrayList extraParameters=[] ) {
+      script.node("ansible-${inventory}") {
+        DEBUG_PRINT "${inventory} setup ${playbook} started"
+
+        def extraString = extraParameters.join(" ")
+
+        play(playbook, extraString)
+
+        DEBUG_PRINT "${inventory} deployed end"
+      }
+
+      DEBUG_PRINT "setup Check ${playbook} in ${inventory} with ${extraParameters}."
+    }
+
 }
