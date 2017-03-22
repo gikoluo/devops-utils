@@ -69,12 +69,12 @@ stage('Setup') {
         
         if (task == "installkey") {
             node("ansible-${inventory}") {
-                sh "ip a"
+                //sh "ip a"
                 def inventoryFile = "/tmp/hosts_$BUILD_ID"
-                PrintWriter writer = new PrintWriter(inventoryFile, "UTF-8");
-                writer.println("[installkeyhost]");
-                writer.println("${machines_limit}");
-                writer.close();
+                sh "echo '' > ${inventoryFile}"
+                sh "echo '[installkeyhost]' >> ${inventoryFile}"
+                sh "echo '${machines_limit} ansible_ssh_pass=${installkey_password} ansible_sudo_pass=${installkey_password}' >> ${inventoryFile}"
+                sh "cat ${inventoryFile}"
                 extra_vars << "-i ${inventoryFile}"
             }
             
