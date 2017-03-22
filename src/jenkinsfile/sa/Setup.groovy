@@ -20,6 +20,7 @@ stage('Parameters') {
     echo "============ ${tasks} ============" 
     echo "============ ${machines_limit} ============" 
     echo "============ ${customize_playbook} ============" 
+    echo "============ ${setupTag} ============"
 }
 
 
@@ -39,6 +40,9 @@ stage('Setup') {
         if (debug) {
             extra_vars << "-v"
         }
+        if (setupTag) {
+            extra_vars << "--tags=setup"
+        }
         switch (task) {
             case "installkey":
                 playbook = "setups/10-installkey";
@@ -49,7 +53,7 @@ stage('Setup') {
             case "jdk7":
                 playbook = "setups/01-oracle-jdk7";
                 break;
-            case "jdk8": 
+            case "jdk8":
                 playbook = "setups/01-oracle-jdk8";
                 break;
             case "customize":
