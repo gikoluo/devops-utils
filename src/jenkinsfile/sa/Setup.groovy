@@ -65,11 +65,13 @@ stage('Setup') {
         input id: 'ex', message: "在任务输出中检查确认影响的IP列表，如无问题，点确认执行", ok: '确认执行', submitter: 'sa,scm'
 
         if (task == "installkey") {
-            def inventoryFile = "/tmp/hosts_$BUILD_ID"
-            PrintWriter writer = new PrintWriter(inventoryFile, "UTF-8");
-            writer.println("[installkeyhost]");
-            writer.println("${machines_limit}");
-            writer.close();
+            script.node("ansible-${inventory}") {
+                def inventoryFile = "/tmp/hosts_$BUILD_ID"
+                PrintWriter writer = new PrintWriter(inventoryFile, "UTF-8");
+                writer.println("[installkeyhost]");
+                writer.println("${machines_limit}");
+                writer.close();
+            }
             extra_vars << "-i ${inventoryFile}"
             extra_vars << "-e ansible_sudo_pass=${installkey_password}"
             extra_vars << "-e ansible_ssh_pass=${installkey_password}"
