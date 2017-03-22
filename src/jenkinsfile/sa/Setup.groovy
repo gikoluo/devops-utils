@@ -71,8 +71,9 @@ stage('Setup') {
                 writer.println("[installkeyhost]");
                 writer.println("${machines_limit}");
                 writer.close();
+                extra_vars << "-i ${inventoryFile}"
             }
-            extra_vars << "-i ${inventoryFile}"
+            
             //extra_vars << "-e ansible_sudo_pass=${installkey_password}"
             //extra_vars << "-e ansible_ssh_pass=${installkey_password}"
         }
