@@ -205,8 +205,7 @@ class Remote implements Serializable {
       script.node("ansible-${inventory}") {
         DEBUG_PRINT "${inventory} ${servicename}, rollback to ${rollbackTo} started"
 
-        playbook = "sos/20-rollback";
-
+        playbook = "sos/20-rollback"
 
         noticer.send( "rollback.ready", "WARNING", inventory, playbook, "回滚开始: ${rollbackTo}" )
 
