@@ -14,7 +14,7 @@ def utils = new Utilities(steps)
 
 //--Part3. workflow for deploy.
 milestone 1
-stage('Parameters') 
+stage('Parameters') {
     echo "============ Parameters ============" 
     echo "============ SERVERS=${SERVERS} ============" 
     echo "============ SERVICE_NAME=${SERVICE_NAME} ============"
