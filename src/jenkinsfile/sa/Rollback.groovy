@@ -14,21 +14,19 @@ def utils = new Utilities(steps)
 
 //--Part3. workflow for deploy.
 milestone 1
-stage('Parameters') {
-
-    echo "============ ${PROJECT_NAME} ============" 
-    echo "============ ${SERVICE_NAME} ============" 
-    echo "============ ${RUN_NAME} ============" 
-    echo "============ ${WORKSPACE} ============" 
-    echo "============ ${ROLLBACK_TO} ============" 
+stage('Parameters') 
+    echo "============ Parameters ============" 
+    echo "============ SERVERS=${SERVERS} ============" 
+    echo "============ SERVICE_NAME=${SERVICE_NAME} ============"
+    echo "============ WORKSPACE=${WORKSPACE} ============" 
+    echo "============ ROLLBACK_TO=${ROLLBACK_TO} ============" 
 }
 
 
 milestone 2
 stage('Setup') {
     remote = new Remote(steps, inventory)
-
-    remote.reLink(PROJECT_NAME, SERVICE_NAME, RUN_NAME, WORKSPACE, ROLLBACK_TO)
+    remote.rollback(SERVERS, SERVICE_NAME, ROLLBACK_TO, WORKSPACE)
 }
 
 

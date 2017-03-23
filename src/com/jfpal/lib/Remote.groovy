@@ -186,9 +186,13 @@ class Remote implements Serializable {
       script.node("ansible-${inventory}") {
         DEBUG_PRINT "${inventory} setup ${playbook} started"
 
+        noticer.send( "setup.ready", "WARNING", inventory, playbook, "系统初始化开始，参数： ${extraParameters}" )
+
         def extraString = extraParameters.join(" ")
 
         play(playbook, extraString)
+
+        noticer.send( "setup.finished", "WARNING", inventory, playbook, "系统初始化完成" )
 
         DEBUG_PRINT "${inventory} deployed end"
       }
@@ -197,16 +201,28 @@ class Remote implements Serializable {
     }
 
 
-    def reLink(String project, String service, String runname, String workspace, String rollbackTo) {
+    def rollback(String servers, String servicename, String rollbackTo, String workspace) {
       script.node("ansible-${inventory}") {
-        script.sh  "[ ! -d ${workspace} ] && echo 'workspace directory ${workspace} is not exists' && exit -1"
-        script.dir("${workspace}") {
-          script.sh  "[ ! -d releases/${rollbackTo} ] && echo 'Rollback directory releases/${rollbackTo} is not exists' && exit -1"
-          script.sh  "[ ! -L current ] && echo 'Current path is not symlink' &&  exit -1"
+        DEBUG_PRINT "${inventory} ${servicename}, rollback to ${rollbackTo} started"
 
-          script.sh  "rm current && ln -s releases/${rollbackTo} current"
-          script.sh  "sudo steve -s ${runname} -k restart"
-        }
+        playbook = "sos/20-rollback";
+
+
+        noticer.send( "rollback.ready", "WARNING", inventory, playbook, "回滚开始: ${rollbackTo}" )
+
+        def extraParameters = []
+        extraParameters << "-e hosts=${servers}"
+        extraParameters << "-e WORKSPACE=${workspace}"
+        extraParameters << "-e ROLLBACK_TO=${rollbackTo}"
+        extraParameters << "-e SERVICE_NAME=${servicename}"
+
+        def extraString = extraParameters.join(" ")
+
+        play(playbook, extraString)
+
+        noticer.send( "rollback.finished", "WARNING", inventory, playbook, "回滚完成: ${rollbackTo}" )
+
+        DEBUG_PRINT "${inventory} deployed end"
       }
     }
 }
