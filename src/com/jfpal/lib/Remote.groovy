@@ -180,6 +180,8 @@ class Remote implements Serializable {
       script.sh "mkdir -p ~/${target}/; cd ~/${target}/ && tar zxf /tmp/${target}/${id}/${file}"
 
       script.sh  "rm -r /tmp/${target}/${id}/"
+
+      noticer.send( "deploy.finished", "INFO", inventory, target, "发布完成。发布编号: ${BUILD_ID}".toString() )
     }
 
     def deploySetup(String playbook, ArrayList extraParameters=[] ) {
