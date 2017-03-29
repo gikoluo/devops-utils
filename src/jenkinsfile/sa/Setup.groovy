@@ -37,10 +37,10 @@ stage('Setup') {
         def extra_vars = []
         def playbook = ""
         extra_vars << "-l ${machines_limit}"
-        if (debug) {
+        if (debug == true) {
             extra_vars << "-v"
         }
-        if (setupTag) {
+        if (setupTag == false) {
             extra_vars << "--tags=setup"
         }
         switch (task) {
