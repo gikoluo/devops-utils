@@ -13,6 +13,8 @@ def targetFile = env.TARGET_FILE     //Build target.
 def buildJob    = env.BUILD_JOB      //Build job in jenkins. 
 def target    = env.TARGET      //Build job in jenkins. 
 
+def ask_permission = False
+
 //def buildProjectName = "builds/Rhasta"
 playbook= "ansible"
 remoteUser="ops"
@@ -53,7 +55,7 @@ stage('Deploy Test') {
 stage('UAT') {
     lock(resource: "${target}-UAT", inversePrecedence: true) {
         milestone 3
-        timeout(time:1, unit:'DAYS') {
+        ask_permission && timeout(time:1, unit:'DAYS') {
             input id: 'pushToUAT', message: "Test环境正常了么？可以提交 UAT 了吗?", ok: '准备好了，发布！', submitter: 'scm,sa'
         }
 
@@ -64,7 +66,7 @@ stage('UAT') {
             echo "UAT deployed"
         }
         
-        timeout(time:1, unit:'DAYS') {
+        ask_permission && timeout(time:1, unit:'DAYS') {
             input message: " UAT 通过了吗? ${uat_url} ", ok: '通过！', submitter: 'scm,sa'
         }
     }
@@ -74,7 +76,7 @@ stage('UAT') {
 milestone 4
 stage ('Production') {
     lock(resource: "${target}-Production", inversePrecedence: true) {
-        timeout(time:1, unit:'DAYS') {
+        ask_permission && timeout(time:1, unit:'DAYS') {
             input message: "可以提交 Prod 了吗?", ok: '准备好了，发布！', submitter: 'scm,sa'
         }
         
@@ -85,7 +87,7 @@ stage ('Production') {
             echo "Production deployed"
         }
         
-        timeout(time:1, unit:'DAYS') {
+        ask_permission && timeout(time:1, unit:'DAYS') {
             input message: "Prod测试完成了吗? ${prod_url} ", ok: '通过！下班，困觉！', submitter: 'scm,sa'
         }
     }
