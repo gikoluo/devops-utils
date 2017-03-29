@@ -13,7 +13,7 @@ def targetFile = env.TARGET_FILE     //Build target.
 def buildJob    = env.BUILD_JOB      //Build job in jenkins. 
 def target    = env.TARGET      //Build job in jenkins. 
 
-def ask_permission = False
+def ask_permission = false
 
 //def buildProjectName = "builds/Rhasta"
 playbook= "ansible"
