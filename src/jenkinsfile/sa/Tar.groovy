@@ -76,7 +76,7 @@ stage('UAT') {
 milestone 4
 stage ('Production') {
     lock(resource: "${target}-Production", inversePrecedence: true) {
-        ask_permission && timeout(time:1, unit:'DAYS') {
+        timeout(time:1, unit:'DAYS') {
             input message: "可以提交 Prod 了吗?", ok: '准备好了，发布！', submitter: 'scm,sa'
         }
         
