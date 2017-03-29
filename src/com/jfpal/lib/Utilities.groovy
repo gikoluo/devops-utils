@@ -21,8 +21,6 @@ class Utilities implements Serializable  {
       //#Use a comma separated list to add more than one expression.
       steps.stash name:'targetArchive', includes: targetFile
     }
-
-    
   }
 
   def finish() {

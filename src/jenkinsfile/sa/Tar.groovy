@@ -54,7 +54,7 @@ stage('UAT') {
     lock(resource: "${target}-UAT", inversePrecedence: true) {
         milestone 3
         timeout(time:1, unit:'DAYS') {
-            input id: 'pushToUAT', message: "Test环境正常了么？可以提交 UAT 了吗?", ok: '准备好了，发布！', submitter: 'sa'
+            input id: 'pushToUAT', message: "Test环境正常了么？可以提交 UAT 了吗?", ok: '准备好了，发布！', submitter: 'scm,sa'
         }
 
         node("ansible-uat") {
@@ -65,7 +65,7 @@ stage('UAT') {
         }
         
         timeout(time:1, unit:'DAYS') {
-            input message: " UAT 通过了吗? ${uat_url} ", ok: '通过！', submitter: 'sa'
+            input message: " UAT 通过了吗? ${uat_url} ", ok: '通过！', submitter: 'scm,sa'
         }
     }
 }
@@ -75,7 +75,7 @@ milestone 4
 stage ('Production') {
     lock(resource: "${target}-Production", inversePrecedence: true) {
         timeout(time:1, unit:'DAYS') {
-            input message: "可以提交 Prod 了吗?", ok: '准备好了，发布！', submitter: 'sa'
+            input message: "可以提交 Prod 了吗?", ok: '准备好了，发布！', submitter: 'scm,sa'
         }
         
         node("ansible-prod") {
@@ -86,7 +86,7 @@ stage ('Production') {
         }
         
         timeout(time:1, unit:'DAYS') {
-            input message: "Prod测试完成了吗? ${prod_url} ", ok: '通过！下班，困觉！', submitter: 'sa'
+            input message: "Prod测试完成了吗? ${prod_url} ", ok: '通过！下班，困觉！', submitter: 'scm,sa'
         }
     }
 }
