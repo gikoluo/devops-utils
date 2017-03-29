@@ -48,7 +48,7 @@ milestone 2
 stage('Deploy Test') {
     node("ansible-test") {
         remote = new Remote(steps, 'test', remoteUser)
-        remote.deployTarGz( targetFile, target)
+        remote.deployTarGz( targetFile, target, BUILD_ID)
     }
 }
 
@@ -62,7 +62,7 @@ stage('UAT') {
         node("ansible-uat") {
             echo 'UAT deploy start'
             remote = new Remote(steps, 'uat', remoteUser)
-            remote.deployTarGz( targetFile, target)
+            remote.deployTarGz( targetFile, target, BUILD_ID)
             echo "UAT deployed"
         }
         
@@ -83,7 +83,7 @@ stage ('Production') {
         node("ansible-prod") {
             echo 'Production deploy status'
             remote = new Remote(steps, 'prod', remoteUser)
-            remote.deployTarGz( targetFile, target)
+            remote.deployTarGz( targetFile, target, BUILD_ID)
             echo "Production deployed"
         }
         

@@ -163,7 +163,7 @@ class Remote implements Serializable {
       deployTarGz(file, "ansible")
     }
 
-    def deployTarGz( String file, String target) {
+    def deployTarGz( String file, String target, String BUILD_ID="0") {
       DEBUG_PRINT "deploy ${file} to ${inventory} with target."
 
       def filename = file.substring(file.lastIndexOf("/") + 1, file.length());
