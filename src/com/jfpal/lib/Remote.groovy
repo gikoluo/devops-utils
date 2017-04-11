@@ -184,6 +184,11 @@ class Remote implements Serializable {
       noticer.send( "deploy.finished", "INFO", inventory, target, "发布完成。发布编号: ${BUILD_ID}".toString() )
     }
 
+    def deployDocker(String file, String target, String BUILD_ID="0") {
+      script.node("ansible-${inventory}") {
+      }
+    }
+
     def deploySetup(String playbook, ArrayList extraParameters=[] ) {
       script.node("ansible-${inventory}") {
         DEBUG_PRINT "${inventory} setup ${playbook} started"
