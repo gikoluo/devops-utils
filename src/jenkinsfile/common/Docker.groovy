@@ -50,6 +50,9 @@ stage('Copy Target') {
     if(autoBuild) {
         build job: buildJob
     }
+    node('master') {
+        utils.copyTarget(buildJob, targetFile, BUILD_ID)
+    }
 }
 
 milestone 2
