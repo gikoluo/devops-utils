@@ -1,9 +1,9 @@
 #!groovy 
 
-@Library('jfpal')
+@Library('luochunhui')
 
-import com.jfpal.lib.Utilities
-import com.jfpal.lib.Remote
+import com.luochunhui.lib.Utilities
+import com.luochunhui.lib.Remote
 
 def utils = new Utilities(steps)
 def playbook = "dspay/dsmanage"
