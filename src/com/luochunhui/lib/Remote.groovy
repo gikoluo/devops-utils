@@ -127,7 +127,7 @@ class Remote implements Serializable {
      * Run ansible playbook
      */
     def play(String playbook, String extra) {
-      def playCmd = "cd ~/rhasta/ && ansible-playbook ${playbook}.yml -i ${inventory} ${extra}"
+      def playCmd = "cd /data/playbooks/ && ansible-playbook ${playbook}.yml -i ${inventory} ${extra}"
       script.sh(playCmd)
     }
 
