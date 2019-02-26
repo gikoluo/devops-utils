@@ -1,5 +1,6 @@
 #!groovy 
-//filename: Deploy.groovy
+//filename: Jenkinsfile.groovy
+//A common file suit for any project
 
 //--Part1. Include the library and make utils.
 @Library('luochunhui')

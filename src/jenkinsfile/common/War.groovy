@@ -1,30 +1,59 @@
 #!groovy 
+//filename: Deploy.groovy
 
+//--Part1. Include the library and make utils.
 @Library('luochunhui')
 
 import com.luochunhui.lib.Utilities
 import com.luochunhui.lib.Remote
 
 def utils = new Utilities(steps)
-def playbook = "dspay/dsmanage"
-def buildProjectName = "DSPAY/builds/manage_all"
-def targetFile = "DSManage-0.0.1-SNAPSHOT.war"
-def archivePublisher = true
-
-def testLinks = [
-  "test": "http://192.180.3.56:8180/DSManage/",
-  "uat": "https://bbcuat.91dbq.com:8443/",
-  "prod": "https://bbc.91dbq.com:8443/"
-]
 
 
-milestone 1
-stage('Copy Target') {
-    node {
-        utils.copyTarget(buildProjectName, targetFile, archivePublisher)
-    }
+//--Part2. Get the variables from Jenkins job settings.
+def projectName = env.PROJECT_NAME   //Project name, Usually it is the name of jenkins project folder name.
+def serviceName = env.SERVICE_NAME   //Service name. Usually it is the process name running in the server.
+def buildJob    = env.BUILD_JOB      //Build job in jenkins. 
+def targetFile = env.TARGET_FILE     //Build target.
+def deployConfig = env.DEPLOY_CONFIG     //Automatic deploy Config
+def autoBuild  = true               //set it to true if you like to build the build job manually.
+def playbook = "";                   //the playbook script file to deploy target, default is "${projectName}/${serviceName}"
+def tags = ["update"]
+
+
+
+if(env.PLAYBOOK) {
+    playbook = env.PLAYBOOK
+}
+else {
+    playbook = "${projectName}/${serviceName}"
 }
 
+if(env.AUTO_BUILD) {
+    autoBuild = env.AUTO_BUILD.toBoolean()
+}
+
+if(env.TAGS) {
+    tags << env.TAGS
+}
+
+
+
+echo "Deploy ${projectName}/${serviceName} with ${playbook}.yml "
+echo "buildJob: ${buildJob}"
+echo "targetFile: ${targetFile}"
+echo "autoBuild: ${autoBuild}"
+
+//--Part3. workflow for deploy.
+milestone 1
+stage('Copy Target') {
+    if(autoBuild) {
+        build job: buildJob
+    }
+    node('master') {
+        utils.copyTarget(buildJob, targetFile, BUILD_ID)
+    }
+}
 
 milestone 2
 stage('QA') {
@@ -33,46 +62,24 @@ stage('QA') {
 
 milestone 3
 stage('Test') {
-    node {
-        remote = new Remote(steps, 'test')
-        remote.deploy (playbook, targetFile, BUILD_ID)
-    }
+    //remote = new Remote(steps, 'test')
+    //remote.deployProcess(playbook, targetFile, BUILD_ID, tags)
 }
 
 milestone 4
 stage('UAT') {
-    timeout(time:1, unit:'DAYS') {
-        input message: "Test环境 ${testLinks.get('test', '')} 正常了么？可以提交 UAT 了吗?", ok: '准备好了，发布！'
-    }
-    lock(resource: "${playbook}-staging-server", inversePrecedence: true) {
-        node {
-            echo 'UAT deploy start'
-            remote = new Remote(steps, 'uat')
-            remote.deploy (playbook, targetFile, BUILD_ID)
-        }
-    }
-    timeout(time:1, unit:'DAYS') {
-        input message: " UAT 通过了吗? ${testLinks.get('uat', '')} ", ok: '通过！'
-    }
+    remote = new Remote(steps, 'uat')
+    remote.deployProcess(playbook, targetFile, BUILD_ID, tags)
 }
-
 
 milestone 5
 stage ('Production') {
-    timeout(time:1, unit:'DAYS') {
-        input message: "可以提交 Prod 了吗?", ok: '准备好了，发布！'
-    }
-    lock(resource: "${playbook}-production-server", inversePrecedence: true) {
-        node {
-            echo 'Production deploy status'
-            remote = new Remote(steps, 'prod')
-            remote.deploy (playbook, targetFile, BUILD_ID)
-            echo "Production deployed"
-        }
-    }
-    timeout(time:1, unit:'DAYS') {
-        input message: "Prod测试完成了吗? ${testLinks.get('prod', '')} ", ok: '通过！下班，困觉！'
-    }
+    remote = new Remote(steps, 'prod')
+    remote.deployProcess(playbook, targetFile, BUILD_ID, tags)
 }
+
+utils.finish()
+
+
 
 
