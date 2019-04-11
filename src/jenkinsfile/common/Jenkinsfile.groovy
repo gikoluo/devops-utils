@@ -52,7 +52,9 @@ stage('Copy Target') {
         build job: buildJob
     }
     node('master') {
-        utils.copyTarget(buildJob, targetFile, BUILD_ID)
+        if (targetFile) {
+            utils.copyTarget(buildJob, targetFile, BUILD_ID)
+        }
     }
 }
 
