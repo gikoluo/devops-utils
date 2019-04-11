@@ -35,7 +35,9 @@ class Remote implements Serializable {
         try {
           DEBUG_PRINT "发布开始。项目: ${playbook}, 发布编号: ${BUILD_ID} ; 环境: ${inventory}; 文件: ${file}; Tags: ${tags}； "
 
-          this.unstash (playbook, file, BUILD_ID)
+          if (file) {
+            this.unstash (playbook, file, BUILD_ID)
+          }
 
           if(inventory != "test") {
             script.timeout(time:1, unit:'DAYS') {

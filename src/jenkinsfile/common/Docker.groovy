@@ -48,10 +48,10 @@ echo "autoBuild: ${autoBuild}"
 milestone 1
 stage('Copy Target') {
     if(autoBuild) {
-        build job: buildJob
+        echo "No building needed"
     }
     node('master') {
-        utils.copyTarget(buildJob, targetFile, BUILD_ID)
+        echo "No copy needed"
     }
 }
 
@@ -60,11 +60,11 @@ stage('QA') {
     utils.qaCheck()
 }
 
-milestone 3
-stage('Test') {
-    remote = new Remote(steps, 'test')
-    remote.deployProcess(playbook, targetFile, BUILD_ID, tags)
-}
+// milestone 3
+// stage('Test') {
+//     remote = new Remote(steps, 'test')
+//     remote.deployProcess(playbook, targetFile, BUILD_ID, tags)
+// }
 
 milestone 4
 stage('UAT') {
