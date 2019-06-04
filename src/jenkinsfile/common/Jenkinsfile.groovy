@@ -65,15 +65,15 @@ stage('QA') {
 
 milestone 3
 stage('Test') {
-    //remote = new Remote(steps, 'test')
-    //remote.deployProcess(playbook, targetFile, BUILD_ID, tags)
-}
-
-milestone 4
-stage('UAT') {
-    remote = new Remote(steps, 'uat')
+    remote = new Remote(steps, 'test')
     remote.deployProcess(playbook, targetFile, BUILD_ID, tags)
 }
+
+// milestone 4
+// stage('UAT') {
+//     remote = new Remote(steps, 'uat')
+//     remote.deployProcess(playbook, targetFile, BUILD_ID, tags)
+// }
 
 milestone 5
 stage ('Production') {
