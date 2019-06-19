@@ -43,10 +43,10 @@ class Remote implements Serializable {
             script.timeout(time:1, unit:'DAYS') {
               def submitter = "";
               if(inventory == 'prod') {
-                submitter = "scm,publisher";
+                submitter = "sa,scm,publisher";
               }
               else {
-                submitter = "qa,scm,publisher";
+                submitter = "test,sa,scm,publisher";
               }
 
               noticer.send( "deploy.ready", "INFO", inventory, playbook, "发布准备妥当。发布编号: ${BUILD_ID}" )
