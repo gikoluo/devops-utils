@@ -63,7 +63,7 @@ class Remote implements Serializable {
           noticer.send( "deploy.finished", "INFO", inventory, playbook, "发布完成。发布编号: ${BUILD_ID}".toString() )
           
           script.timeout(time:1, unit:'DAYS') {
-            script.input message: "${inventory}测试通过了吗? ", ok: '通过！', submitter: 'qa'
+            script.input message: "${inventory}测试通过了吗? ", ok: '通过！', submitter: 'test'
           }
 
           noticer.send( "deploy.pass", "INFO", inventory, playbook, "测试通过。发布编号: ${BUILD_ID}".toString() )
