@@ -234,24 +234,23 @@ class Remote implements Serializable {
       }
     }
 
-    def restart(String servers, String servicename, String rollbackTo, String workspace) {
+    def restart(String servers, String servicename) {
       script.node("ansible-${inventory}") {
         DEBUG_PRINT "${inventory} restart service: ${servicename}"
 
         def playbook = "sos/21-restart"
 
-        noticer.send( "restart.ready", "WARNING", inventory, playbook, "重启开始: ${rollbackTo}" )
+        noticer.send( "restart.ready", "WARNING", inventory, playbook, "重启开始:" )
 
         def extraParameters = []
         extraParameters << "-e hosts=${servers}"
-        extraParameters << "-e WORKSPACE=${workspace}"
         extraParameters << "-e SERVICE_NAME=${servicename}"
 
         def extraString = extraParameters.join(" ")
 
         play(playbook, extraString)
 
-        noticer.send( "restart.finished", "WARNING", inventory, playbook, "重启完成: ${rollbackTo}" )
+        noticer.send( "restart.finished", "WARNING", inventory, playbook, "重启完成" )
 
         DEBUG_PRINT "${inventory} deployed end"
       }
