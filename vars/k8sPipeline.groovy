@@ -7,7 +7,7 @@ def call(Map config) {
   def branchName
   
   def deploymentName = config.DEPLOYMENT_NAME
-  def containerName = config.COMTAINER_NAME
+  def containerName = config.CONTAINER_NAME
   def deplayNamespace = config.PROJECT_NAME
 
   def hubCredential=env.HUB_CREDENTIAL
