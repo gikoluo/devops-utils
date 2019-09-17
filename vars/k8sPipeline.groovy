@@ -11,7 +11,7 @@ def call(Map config) {
   def deplayNamespace = config.PROJECT_NAME
 
   def hubCredential=env.HUB_CREDENTIAL
-  def skipQA = true
+  def enableQA = false
   def k8sNS="devops"
 
   def namespace = "swr.cn-east-2.myhuaweicloud.com"
@@ -33,8 +33,8 @@ def call(Map config) {
       sonarExtendsParams = env.SONAR_EXTENDS_PARAMS
   }
 
-  if(env.ENABLE_QA ) {
-      skipQA = false
+  if( env.ENABLE_QA ) {
+      enableQA = !! env.ENABLE_QA
   }
 
 
@@ -163,7 +163,7 @@ def call(Map config) {
           container('docker') {
             echo "Run SonarQube Analysis"
             script {
-              if(! skipQA) {
+              if( enableQA == true ) {
                 //docker run -ti -v $(pwd):/root/src --entrypoint='' newtmitch/sonar-scanner sonar-scanner -Dsonar.host.url=http://docker.for.mac.host.internal:9000 -X
                 //def image = docker.image("nikhuber/sonar-scanner:latest")
                 //def image = docker.build("${tag}:sonarqube", "--target build_stage")
