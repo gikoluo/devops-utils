@@ -8,6 +8,7 @@ def call(Map config) {
   
   def deploymentName = config.DEPLOYMENT_NAME
   def containerName = config.COMTAINER_NAME
+  def deplayNamespace = config.PROJECT_NAME
 
   def hubCredential=env.HUB_CREDENTIAL
   def skipQA = env.SKIP_QA
@@ -254,7 +255,7 @@ def call(Map config) {
 
           container('kubectl') {
             withKubeConfig([credentialsId: 'kubeconfig-uat']) {
-              sh "kubectl set image ${deploymentName} ${containerName}=${tag}:uat --namespace=${PROJECT_NAME}"
+              sh "kubectl set image ${deploymentName} ${containerName}=${tag}:uat --namespace=${deplayNamespace}"
             }
             //kubectl set image deployment/my-deployment mycontainer=myimage:latest
 
