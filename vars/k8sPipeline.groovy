@@ -1,14 +1,16 @@
-def call(int buildNumber) {
+def call(Map config) {
   // Jenkinsfile
-  def projectName = env.PROJECT_NAME   //Project name, Usually it is the name of jenkins project folder name.
-  def serviceName = env.SERVICE_NAME   //Service name. Usually it is the process name running in the server.
-  def archiveFile = env.ARCHIVE_FILE
-  def skipQA = env.SKIP_QA
+  def projectName = config.PROJECT_NAME   //Project name, Usually it is the name of jenkins project folder name.
+  def serviceName = config.SERVICE_NAME   //Service name. Usually it is the process name running in the server.
+  def archiveFile = config.ARCHIVE_FILE
   //def branchName = env.BRANCH_NAME     //Branch name. And the project must be multibranch pipeline, Or set the env in config
   def branchName
+  
+  def deploymentName = config.DEPLOYMENT_NAME
+  def containerName = config.COMTAINER_NAME
+
   def hubCredential=env.HUB_CREDENTIAL
-  def deploymentName = env.DEPLOYMENT_NAME
-  def containerName = env.COMTAINER_NAME
+  def skipQA = env.SKIP_QA
   def k8sNS="devops"
 
   def namespace = "swr.cn-east-2.myhuaweicloud.com"
