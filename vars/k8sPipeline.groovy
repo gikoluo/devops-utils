@@ -25,6 +25,14 @@ def call(Map config) {
   //def envs = ['dev','test','uat', 'prd']
   def envs = ['common']
   def packageArgs = " -Dmaven.test.skip=true"
+  
+
+  def sonarExtendsParams = "-Dsonar.sources=./src/main/java/ -Dsonar.java.binaries=./target/classes"
+
+  if(env.SONAR_EXTENDS_PARAMS) {
+      sonarExtendsParams = env.SONAR_EXTENDS_PARAMS
+  }
+
 
   pipeline {
     agent {
@@ -162,8 +170,7 @@ def call(Map config) {
                     sh """
                     mvn ${packageArgs} package sonar:sonar \
                       -Dsonar.host.url=http://docker.for.mac.host.internal:9000 \
-                      -Dsonar.sources=./src/main/java/ \
-                      -Dsonar.java.binaries=./target/classes
+                      ${sonarExtendsParams}
                     """
                   //}
                 }
