@@ -11,7 +11,7 @@ def call(Map config) {
   def deplayNamespace = config.PROJECT_NAME
 
   def hubCredential=env.HUB_CREDENTIAL
-  def skipQA = env.SKIP_QA
+  def skipQA = true
   def k8sNS="devops"
 
   def namespace = "swr.cn-east-2.myhuaweicloud.com"
@@ -31,6 +31,10 @@ def call(Map config) {
 
   if(env.SONAR_EXTENDS_PARAMS) {
       sonarExtendsParams = env.SONAR_EXTENDS_PARAMS
+  }
+
+  if(env.ENABLE_QA ) {
+      skipQA = false
   }
 
 
