@@ -193,7 +193,7 @@ def call(Map config) {
 
       stage('SonarQube analysis') {
         steps {
-          container('sonar') {
+          container('docker') {
             echo "Run SonarQube Analysis"
             script {
               if( enableQA == true ) {
