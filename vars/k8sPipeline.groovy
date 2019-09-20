@@ -42,7 +42,7 @@ def call(Map config) {
     agent {
       kubernetes {
         // this label will be the prefix of the generated pod's name
-        //label '${projectName}-${serviceName}'
+        label '${projectName}-${serviceName}'
         defaultContainer 'jnlp'
         yaml """
   apiVersion: v1
@@ -84,7 +84,7 @@ def call(Map config) {
     // options {
     //   // skipDefaultCheckout(true)
     // }
-
+    node(label) {
     stages {
       stage('Init') {
         steps {
@@ -104,17 +104,13 @@ def call(Map config) {
 
             if (scm instanceof hudson.plugins.git.GitSCM) {
               sh 'git rev-parse HEAD > commit'
-              version = readFile('commit').trim()
+              
             }
             else if (scm instanceof hudson.scm.SubversionSCM) {
-
-              version = "${BUILD_NUMBER}"
-
               sh 'echo ${BUILD_NUMBER} > commit'
-
-              sh 'env'
             }
 
+            version = readFile('commit').trim()
 
             imageName = "${projectName}-${serviceName}"
             // version = readFile('commit').trim()
@@ -359,6 +355,7 @@ def call(Map config) {
           // }
         }
       }
+    }
     }
   }
 }
