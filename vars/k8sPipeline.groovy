@@ -10,7 +10,7 @@ def call(Map config) {
   def containerName = config.CONTAINER_NAME
   def deplayNamespace = config.PROJECT_NAME
 
-  def hubCredential=env.HUB_CREDENTIAL
+  def hubCredential="dockerhub"
   def enableQA = false
   def k8sNS="devops"
 

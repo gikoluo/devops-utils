@@ -10,7 +10,7 @@ pipeline {
   agent {
     kubernetes {
       // this label will be the prefix of the generated pod's name
-      //label '${projectName}-${serviceName}'
+      label '${projectName}-${serviceName}'
       defaultContainer 'jnlp'
       yaml """
 apiVersion: v1
