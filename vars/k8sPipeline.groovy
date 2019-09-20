@@ -76,9 +76,17 @@ def call(Map config) {
       }
     }
 
+    options {
+      skipDefaultCheckout(true)
+    }
+
     stages {
       stage('Init') {
         steps {
+          
+          
+
+
           container('docker') {
             withCredentials([[$class: 'UsernamePasswordMultiBinding',
               credentialsId: "${hubCredential}",
@@ -98,10 +106,14 @@ def call(Map config) {
           // }
 
           script {
-            sh 'git rev-parse HEAD > commit'
+            def scmVars = checkout scm
 
-            imageName = "${projectName}-${serviceName}"
-            version = readFile('commit').trim()
+            version = scmVars.GIT_COMMIT || scmVars.SVN_REVISION
+
+            // sh 'git rev-parse HEAD > commit'
+
+            // imageName = "${projectName}-${serviceName}"
+            // version = readFile('commit').trim()
             tag = "${namespace}/${org}/${imageName}"
 
             archiveFlatName = sh (
