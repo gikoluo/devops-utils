@@ -84,7 +84,6 @@ def call(Map config) {
     // options {
     //   // skipDefaultCheckout(true)
     // }
-    node(label) {
     stages {
       stage('Init') {
         steps {
@@ -355,7 +354,6 @@ def call(Map config) {
           // }
         }
       }
-    }
     }
   }
 }
