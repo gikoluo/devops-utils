@@ -173,7 +173,7 @@ def call(Map config) {
                   //withSonarQubeEnv('SonarQubeServer') {
                     sh """
                     mvn ${packageArgs} package sonar:sonar \
-                      -Dsonar.host.url=http://devops-sonarqube-sonarqube:9000 \
+                      -Dsonar.host.url=http://devops-sonarqube-sonarqube.devops.svc.cluster.local:9000 \
                       ${sonarExtendsParams}
                     """
                   //}
