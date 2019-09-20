@@ -63,6 +63,11 @@ def call(Map config) {
       volumeMounts:
         - mountPath: /var/run/docker.sock
           name: docker-sock
+    - name: sonar
+      image: newtmitch/sonar-scanner
+      command:
+      - cat
+      tty: true
     - name: kubectl
       image: lachlanevenson/k8s-kubectl:v1.14.6
       command:
@@ -84,16 +89,20 @@ def call(Map config) {
       stage('Init') {
         steps {
           script {
-            def checkoutResults = checkout scm
+            def checkoutResults = checkout scm: scm, poll: false, changelog: false
+
+
 
             echo 'checkout results' + checkoutResults.toString()
             echo 'checkout revision' + checkoutResults['SVN_REVISION']
 
-            echo scmVars.SVN_REVISION
+            echo 'scm: ' + scm.toString()
 
-            echo scmVars.GIT_COMMIT
+            echo checkoutResults.SVN_REVISION
 
-            version = scmVars.GIT_COMMIT || scmVars.SVN_REVISION
+            echo checkoutResults.GIT_COMMIT
+
+            version = checkoutResults.GIT_COMMIT || checkoutResults.SVN_REVISION
 
             // sh 'git rev-parse HEAD > commit'
 
@@ -177,7 +186,7 @@ def call(Map config) {
 
       stage('SonarQube analysis') {
         steps {
-          container('docker') {
+          container('sonar') {
             echo "Run SonarQube Analysis"
             script {
               if( enableQA == true ) {
