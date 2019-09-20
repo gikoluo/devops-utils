@@ -82,31 +82,39 @@ def call(Map config) {
     }
 
     options {
-      skipDefaultCheckout(true)
+      // skipDefaultCheckout(true)
     }
 
     stages {
       stage('Init') {
         steps {
           script {
-            def checkoutResults = checkout scm: scm, poll: false, changelog: false
+            // def checkoutResults = checkout scm: scm, poll: false, changelog: false
 
 
 
-            echo 'checkout results' + checkoutResults.toString()
-            echo 'checkout revision' + checkoutResults['SVN_REVISION']
+            // echo 'checkout results' + checkoutResults.toString()
+            // echo 'checkout revision' + checkoutResults['SVN_REVISION']
 
-            echo 'scm: ' + scm.toString()
+            // echo 'scm: ' + scm.toString()
 
-            echo checkoutResults.SVN_REVISION
+            // echo checkoutResults.SVN_REVISION
 
-            echo checkoutResults.GIT_COMMIT
+            // echo checkoutResults.GIT_COMMIT
 
-            version = checkoutResults.GIT_COMMIT || checkoutResults.SVN_REVISION
+            // version = checkoutResults.GIT_COMMIT || checkoutResults.SVN_REVISION
 
-            // sh 'git rev-parse HEAD > commit'
+            if (scm instanceof hudson.plugins.git.GitSCM) {
+              sh 'git rev-parse HEAD > commit'
+              
+            }
+            else if (scm instanceof hudson.scm.SubversionSCM) {
+              sh 'svn info . |grep "^Revision:" | sed -e "s/^Revision: //" > commit'
+            }
 
-            // imageName = "${projectName}-${serviceName}"
+            version = readFile('commit').trim()
+
+            imageName = "${projectName}-${serviceName}"
             // version = readFile('commit').trim()
             tag = "${namespace}/${org}/${imageName}"
 
