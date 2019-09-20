@@ -104,15 +104,20 @@ def call(Map config) {
 
             if (scm instanceof hudson.plugins.git.GitSCM) {
               sh 'git rev-parse HEAD > commit'
+              version = readFile('commit').trim()
             }
             else if (scm instanceof hudson.scm.SubversionSCM) {
-              echo env.SVN_REVISION
-              sh """#!/bin/bash
-                svn info | grep "Revision" | awk '{print \$2}' > commit
-              """
+              version = "${BUILD_NUMBER}"
+
+              echo "${SVN_REVISION}"
+              echo "${BUILD_NUMBER}"
+
+              sh 'env'
             }
 
-            version = readFile('commit').trim()
+
+
+            
 
             imageName = "${projectName}-${serviceName}"
             // version = readFile('commit').trim()
