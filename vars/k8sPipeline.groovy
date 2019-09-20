@@ -83,9 +83,28 @@ def call(Map config) {
     stages {
       stage('Init') {
         steps {
-          
-          
+          script {
+            def scmVars = checkout scm
 
+            
+
+            echo scmVars.SVN_REVISION
+
+            echo scmVars.GIT_COMMIT
+
+            version = scmVars.GIT_COMMIT || scmVars.SVN_REVISION
+
+            // sh 'git rev-parse HEAD > commit'
+
+            // imageName = "${projectName}-${serviceName}"
+            // version = readFile('commit').trim()
+            tag = "${namespace}/${org}/${imageName}"
+
+            archiveFlatName = sh (
+                script: "basename ${archiveFile}",
+                returnStdout: true
+            ).trim()
+          }
 
           container('docker') {
             withCredentials([[$class: 'UsernamePasswordMultiBinding',
@@ -105,22 +124,7 @@ def call(Map config) {
           //   }
           // }
 
-          script {
-            def scmVars = checkout scm
-
-            version = scmVars.GIT_COMMIT || scmVars.SVN_REVISION
-
-            // sh 'git rev-parse HEAD > commit'
-
-            // imageName = "${projectName}-${serviceName}"
-            // version = readFile('commit').trim()
-            tag = "${namespace}/${org}/${imageName}"
-
-            archiveFlatName = sh (
-                script: "basename ${archiveFile}",
-                returnStdout: true
-            ).trim()
-          }
+          
         }
       }
 
