@@ -91,11 +91,6 @@ def call(Map config) {
           script {
             // def checkoutResults = checkout scm: scm, poll: false, changelog: false
 
-checkout(Run build, FilePath workspace, TaskListener listener, EnvVars env)
-
-checkout(Run build, Launcher launcher, FilePath workspace, final TaskListener listener, File changelogFile, SCMRevisionState baseline) throws IOException, InterruptedException {
-
-
             // echo 'checkout results' + checkoutResults.toString()
             // echo 'checkout revision' + checkoutResults['SVN_REVISION']
 
