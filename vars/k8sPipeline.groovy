@@ -40,7 +40,7 @@ def call(Map config) {
 
   pipeline {
     agent {
-      kubernetes {
+      "k8s-builder" {
         // this label will be the prefix of the generated pod's name
         //label '${projectName}-${serviceName}'
         defaultContainer 'jnlp'
