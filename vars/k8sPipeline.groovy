@@ -107,17 +107,14 @@ def call(Map config) {
               version = readFile('commit').trim()
             }
             else if (scm instanceof hudson.scm.SubversionSCM) {
+
               version = "${BUILD_NUMBER}"
 
-              echo "${SVN_REVISION}"
-              echo "${BUILD_NUMBER}"
+              sh 'echo ${BUILD_NUMBER} > commit'
 
               sh 'env'
             }
 
-
-
-            
 
             imageName = "${projectName}-${serviceName}"
             // version = readFile('commit').trim()
