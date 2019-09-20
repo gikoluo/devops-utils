@@ -81,9 +81,9 @@ def call(Map config) {
       }
     }
 
-    options {
-      // skipDefaultCheckout(true)
-    }
+    // options {
+    //   // skipDefaultCheckout(true)
+    // }
 
     stages {
       stage('Init') {
