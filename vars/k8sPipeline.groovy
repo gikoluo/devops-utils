@@ -84,9 +84,10 @@ def call(Map config) {
       stage('Init') {
         steps {
           script {
-            def scmVars = checkout scm
+            def checkoutResults = checkout scm
 
-            
+            echo 'checkout results' + checkoutResults.toString()
+            echo 'checkout revision' + checkoutResults['SVN_REVISION']
 
             echo scmVars.SVN_REVISION
 
