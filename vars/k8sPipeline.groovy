@@ -2,7 +2,7 @@ def call(Map config) {
   // Jenkinsfile
   def projectName = config.PROJECT_NAME   //Project name, Usually it is the name of jenkins project folder name.
   def serviceName = config.SERVICE_NAME   //Service name. Usually it is the process name running in the server.
-  def archiveFile = config.ARCHIVE_FILE
+  //def archiveFile = config.ARCHIVE_FILE
   //def branchName = env.BRANCH_NAME     //Branch name. And the project must be multibranch pipeline, Or set the env in config
   def branchName
   
@@ -114,11 +114,6 @@ def call(Map config) {
             imageName = "${projectName}-${serviceName}"
             // version = readFile('commit').trim()
             tag = "${namespace}/${org}/${imageName}"
-
-            archiveFlatName = sh (
-                script: "basename ${archiveFile}",
-                returnStdout: true
-            ).trim()
           }
 
           container('docker') {
@@ -250,13 +245,26 @@ def call(Map config) {
       stage('Archive Target File & push image') {
         steps {
           container('docker') {
-            echo "Extract the Archive File : ${archiveFile} to ${archiveFlatName}"
-
+            echo "Extract the Archive File"
             script {
-              //def image = docker.image("${tag}:${version}")
               sourceImage.inside {
-                sh "cp \${BUILDED_FILE} ${WORKSPACE}/${archiveFlatName}"
-                archiveArtifacts "${archiveFlatName}"
+                archiveFile = sh (
+                    script: "echo \${ARCHIVE_FILE}",
+                    returnStdout: true
+                ).trim()
+                if (archiveFile == "") {
+                  echo "ARCHIVE_FILE does not defined. skipped."
+                }
+                else {
+                  archiveFlatName = sh (
+                      script: "basename ${BUILDED_FILE}",
+                      returnStdout: true
+                  ).trim()
+
+                  sh "cp \${BUILDED_FILE} ${WORKSPACE}/${archiveFlatName}"
+                  archiveArtifacts "${archiveFlatName}"
+                }
+                
               }
               versionImage.push()
             }
