@@ -255,7 +255,7 @@ def call(Map config) {
             script {
               //def image = docker.image("${tag}:${version}")
               sourceImage.inside {
-                sh "cp ${archiveFile} ${WORKSPACE}/${archiveFlatName}"
+                sh "cp \${BUILDED_FILE} ${WORKSPACE}/${archiveFlatName}"
                 archiveArtifacts "${archiveFlatName}"
               }
               versionImage.push()
