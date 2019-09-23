@@ -258,7 +258,7 @@ def call(Map config) {
                 }
                 else {
                   archiveFlatName = sh (
-                      script: "basename ${ARCHIVE_FILE}",
+                      script: "basename \${ARCHIVE_FILE}",
                       returnStdout: true
                   ).trim()
 
