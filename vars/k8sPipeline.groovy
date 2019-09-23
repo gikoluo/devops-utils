@@ -8,7 +8,7 @@ def call(Map config) {
   
   def deploymentName = config.DEPLOYMENT_NAME
   def containerName = config.CONTAINER_NAME
-  def deplayNamespace = config.PROJECT_NAME
+  def deployNamespace = config.PROJECT_NAME
 
   def hubCredential="dockerhub"
   def enableQA = false
@@ -281,38 +281,12 @@ def call(Map config) {
                 docker tag ${tag}:${version} ${tag}:uat
                 docker push ${tag}:uat
                 """
-            // withCredentials([[$class: 'UsernamePasswordMultiBinding',
-            //   credentialsId: "${hubCredential}",
-            //   usernameVariable: 'DOCKER_HUB_USER',
-            //   passwordVariable: 'DOCKER_HUB_PASSWORD']]) {
-            //   sh """
-            //     docker login -u ${DOCKER_HUB_USER} -p ${DOCKER_HUB_PASSWORD} ${namespace}
-            //     docker tag ${tag} ${tag_uat}
-            //     docker push ${tag_uat}
-            //     """
-
-            //   script {
-            //     tag_uat = "${namespace}/${org}/${imageName}:uat"
-
-            //     def image = docker.image("${tag}")
-            //     image.inside {
-            //       sh "cp ${archiveFile} ${WORKSPACE}/${archiveFlatName}"
-            //       archiveArtifacts "${archiveFlatName}"
-            //     }
-            //   }
-            // }
           }
 
           container('kubectl') {
             withKubeConfig([credentialsId: 'kubeconfig-uat']) {
-              sh "kubectl set image ${deploymentName} ${containerName}=${tag}:uat --namespace=${deplayNamespace}"
+              sh "kubectl set image ${deploymentName} ${containerName}=${tag}:uat --namespace=${deployNamespace}"
             }
-            //kubectl set image deployment/my-deployment mycontainer=myimage:latest
-
-            //  sh "kubectl version"
-            // sh "kubectl delete -f ./kubernetes/deployment.yaml"
-            // sh "kubectl apply -f ./kubernetes/deployment.yaml"
-            // sh "kubectl apply -f ./kubernetes/service.yaml"
           }
         }
       }
@@ -325,41 +299,7 @@ def call(Map config) {
                 docker tag ${tag}:uat ${tag}:prod
                 docker push ${tag}:prod
                 """
-            // withCredentials([[$class: 'UsernamePasswordMultiBinding',
-            //   credentialsId: "${hubCredential}",
-            //   usernameVariable: 'DOCKER_HUB_USER',
-            //   passwordVariable: 'DOCKER_HUB_PASSWORD']]) {
-            //   sh """
-            //     docker login -u ${DOCKER_HUB_USER} -p ${DOCKER_HUB_PASSWORD} ${namespace}
-            //     docker tag ${tag} ${tag_uat}
-            //     docker push ${tag_uat}
-            //     """
-            //docker login -u cn-east-2@$AK -p 153690a09016d5e98aae063039d305e3df3fb3756649862b1c0c0955bab12f06 swr.cn-east-2.myhuaweicloud.com
-
-
-
-            //   script {
-            //     tag_uat = "${namespace}/${org}/${imageName}:uat"
-
-            //     def image = docker.image("${tag}")
-            //     image.inside {
-            //       sh "cp ${archiveFile} ${WORKSPACE}/${archiveFlatName}"
-            //       archiveArtifacts "${archiveFlatName}"
-            //     }
-            //   }
-            // }
           }
-
-          // container('kubectl') {
-          //   withKubeConfig([credentialsId: 'kubeconfig-prod']) {
-          //     sh 'kubectl get namespaces'
-          //     sh 'kubectl apply -f ./kubernetes/deployment.yaml'
-          //   }
-          //   //  sh "kubectl version"
-          //   // sh "kubectl delete -f ./kubernetes/deployment.yaml"
-          //   // sh "kubectl apply -f ./kubernetes/deployment.yaml"
-          //   // sh "kubectl apply -f ./kubernetes/service.yaml"
-          // }
         }
       }
     }
