@@ -248,6 +248,7 @@ def call(Map config) {
             echo "Extract the Archive File"
             script {
               sourceImage.inside {
+                sh "env"
                 archiveFile = sh (
                     script: "echo \${ARCHIVE_FILE}",
                     returnStdout: true
@@ -257,14 +258,13 @@ def call(Map config) {
                 }
                 else {
                   archiveFlatName = sh (
-                      script: "basename ${BUILDED_FILE}",
+                      script: "basename ${ARCHIVE_FILE}",
                       returnStdout: true
                   ).trim()
 
-                  sh "cp \${BUILDED_FILE} ${WORKSPACE}/${archiveFlatName}"
+                  sh "cp \${ARCHIVE_FILE} ${WORKSPACE}/${archiveFlatName}"
                   archiveArtifacts "${archiveFlatName}"
                 }
-                
               }
               versionImage.push()
             }
