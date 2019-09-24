@@ -283,6 +283,14 @@ def call(Map config) {
                 """
           }
 
+          script {
+            timeout(time:1, unit:'DAYS') {
+              def submitter = "test,sa,scm,publisher"
+              input message: "可以发布 UAT 了吗?", ok: '可以了，发布！', submitter: submitter
+            }
+          }
+
+
           container('kubectl') {
             withKubeConfig([credentialsId: 'kubeconfig-uat']) {
               sh "kubectl set image ${deploymentName} ${containerName}=${tag}:uat-${timeFlag} --namespace=${deployNamespace}"
@@ -300,6 +308,19 @@ def call(Map config) {
                 docker push ${tag}:prod-${timeFlag}
                 """
           }
+          script {
+            timeout(time:1, unit:'DAYS') {
+              def submitter = "test,sa,scm,publisher"
+              input message: "可以发布 PROD 了吗?", ok: '可以了，发布！', submitter: submitter
+            }
+          }
+
+          // container('kubectl') {
+          //   withKubeConfig([credentialsId: 'kubeconfig-prod']) {
+          //     sh "kubectl set image ${deploymentName} ${containerName}=${tag}:prod-${timeFlag} --namespace=${deployNamespace}"
+          //   }
+          // }
+
         }
       }
     }
