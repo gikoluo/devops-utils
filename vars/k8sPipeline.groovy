@@ -25,7 +25,7 @@ def call(Map config) {
   //def envs = ['dev','test','uat', 'prd']
   def envs = ['common']
   def packageArgs = " -Dmaven.test.skip=true"
-  
+  def timeFlag = new Date().format("yyyyMMdd-hhmm")
 
   def sonarExtendsParams = "-Dsonar.sources=./src/main/java/ -Dsonar.java.binaries=./target/classes"
 
@@ -278,14 +278,14 @@ def call(Map config) {
         steps {
           container('docker') {
             sh """
-                docker tag ${tag}:${version} ${tag}:uat
-                docker push ${tag}:uat
+                docker tag ${tag}:${version} ${tag}:uat-{$timeFlag}
+                docker push ${tag}:uat-{$timeFlag}
                 """
           }
 
           container('kubectl') {
             withKubeConfig([credentialsId: 'kubeconfig-uat']) {
-              sh "kubectl set image ${deploymentName} ${containerName}=${tag}:uat --namespace=${deployNamespace}"
+              sh "kubectl set image ${deploymentName} ${containerName}=${tag}:uat-{$timeFlag} --namespace=${deployNamespace}"
             }
           }
         }
@@ -296,8 +296,8 @@ def call(Map config) {
         steps {
           container('docker') {
             sh """
-                docker tag ${tag}:uat ${tag}:prod
-                docker push ${tag}:prod
+                docker tag ${tag}:uat-{$timeFlag} ${tag}:prod-{$timeFlag}
+                docker push ${tag}:prod-{$timeFlag}
                 """
           }
         }
