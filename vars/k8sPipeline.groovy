@@ -278,14 +278,14 @@ def call(Map config) {
         steps {
           container('docker') {
             sh """
-                docker tag ${tag}:${version} ${tag}:uat-{$timeFlag}
-                docker push ${tag}:uat-{$timeFlag}
+                docker tag ${tag}:${version} ${tag}:uat-${timeFlag}
+                docker push ${tag}:uat-${timeFlag}
                 """
           }
 
           container('kubectl') {
             withKubeConfig([credentialsId: 'kubeconfig-uat']) {
-              sh "kubectl set image ${deploymentName} ${containerName}=${tag}:uat-{$timeFlag} --namespace=${deployNamespace}"
+              sh "kubectl set image ${deploymentName} ${containerName}=${tag}:uat-${timeFlag} --namespace=${deployNamespace}"
             }
           }
         }
@@ -296,8 +296,8 @@ def call(Map config) {
         steps {
           container('docker') {
             sh """
-                docker tag ${tag}:uat-{$timeFlag} ${tag}:prod-{$timeFlag}
-                docker push ${tag}:prod-{$timeFlag}
+                docker tag ${tag}:uat-${timeFlag} ${tag}:prod-${timeFlag}
+                docker push ${tag}:prod-${timeFlag}
                 """
           }
         }
