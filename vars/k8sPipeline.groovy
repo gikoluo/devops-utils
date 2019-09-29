@@ -310,7 +310,7 @@ def call(Map config) {
           }
           script {
             timeout(time:1, unit:'DAYS') {
-              def submitter = "test,sa,scm,publisher"
+              def submitter = "sa,scm,publisher"
               input message: "可以发布 PROD 了吗?", ok: '可以了，发布！', submitter: submitter
             }
           }
