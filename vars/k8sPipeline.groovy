@@ -152,9 +152,9 @@ def call(Map config) {
         steps {
           container('docker') {
             script {
-              versionImage = docker.build("${tag}:${version}", "-v maven-repo:/root/.m2")
+              versionImage = docker.build("${tag}:${version}")
 
-              sourceImage = docker.build("${tag}:build_stage", "-v maven-repo:/root/.m2 --target build_stage .")
+              sourceImage = docker.build("${tag}:build_stage", "--target build_stage .")
             }
           }
         }
