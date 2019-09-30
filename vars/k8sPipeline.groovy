@@ -146,9 +146,9 @@ def call(Map config) {
         steps {
           container('docker') {
             script {
-              versionImage = docker.withHostPath('/home/jenkins/.m2', '/root/.m2').build("${tag}:${version}")
+              versionImage = docker.withHostPath("/home/jenkins/.m2", "/root/.m2").build("${tag}:${version}")
 
-              sourceImage = docker.withHostPath('/home/jenkins/.m2', '/root/.m2').build("${tag}:build_stage", "--target build_stage .")
+              sourceImage = docker.withHostPath("/home/jenkins/.m2", "/root/.m2").build("${tag}:build_stage", "--target build_stage .")
             }
           }
         }
