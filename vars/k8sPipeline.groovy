@@ -82,10 +82,7 @@ def call(Map config) {
   """
       }
     }
-      // - persistentVolumeClaim:
-      //     claimName: "cce-sfs-devops-jenkins"
-      //     mountPath: "/home/jenkins/workspace"
-      //     readOnly: false
+
     // options {
     //   // skipDefaultCheckout(true)
     // }
@@ -147,9 +144,9 @@ def call(Map config) {
         steps {
           container('docker') {
             script {
-              versionImage = docker.build("${tag}:${version}")
+              versionImage = docker.withHostPath('/home/jenkins/.m2', '/root/.m2').build("${tag}:${version}")
 
-              sourceImage = docker.build("${tag}:build_stage", "--target build_stage .")
+              sourceImage = docker.withHostPath('/home/jenkins/.m2', '/root/.m2').build("${tag}:build_stage", "--target build_stage .")
             }
           }
         }
