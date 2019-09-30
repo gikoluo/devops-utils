@@ -63,6 +63,9 @@ def call(Map config) {
       volumeMounts:
         - mountPath: /var/run/docker.sock
           name: docker-sock
+        - mountPath: /root/.m2
+          name: m2-cache
+
         
     - name: sonar
       image: newtmitch/sonar-scanner
@@ -81,6 +84,9 @@ def call(Map config) {
       - name: workspace-volume
         hostPath:
           path: /var/jenkins_home
+       - name: m2-cache
+        hostPath:
+          path: /var/jenkins_home/.m2
   """
       }
     }
@@ -146,9 +152,9 @@ def call(Map config) {
         steps {
           container('docker') {
             script {
-              versionImage = docker.withHostPath("/home/jenkins/.m2", "/root/.m2").build("${tag}:${version}")
+              versionImage = docker.build("${tag}:${version}")
 
-              sourceImage = docker.withHostPath("/home/jenkins/.m2", "/root/.m2").build("${tag}:build_stage", "--target build_stage .")
+              sourceImage = docker.build("${tag}:build_stage", "--target build_stage .")
             }
           }
         }
