@@ -84,7 +84,7 @@ def call(Map config) {
       - name: workspace-volume
         hostPath:
           path: /var/jenkins_home
-       - name: m2-cache
+      - name: m2-cache
         hostPath:
           path: /var/jenkins_home/.m2
   """
