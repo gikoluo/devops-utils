@@ -63,6 +63,7 @@ def call(Map config) {
       volumeMounts:
         - mountPath: /var/run/docker.sock
           name: docker-sock
+        
     - name: sonar
       image: newtmitch/sonar-scanner
       command:
@@ -77,6 +78,9 @@ def call(Map config) {
       - name: docker-sock
         hostPath:
           path: /var/run/docker.sock
+      - name: workspace-volume
+        hostPath:
+          path: /var/jenkins
   """
       }
     }
@@ -189,7 +193,7 @@ def call(Map config) {
           container('docker') {
             echo "Run SonarQube Analysis"
             script {
-              if( enableQA == true ) {
+              if( enableQA.toBoolean() ) {
                 //docker run -ti -v $(pwd):/root/src --entrypoint='' newtmitch/sonar-scanner sonar-scanner -Dsonar.host.url=http://docker.for.mac.host.internal:9000 -X
                 //def image = docker.image("nikhuber/sonar-scanner:latest")
                 //def image = docker.build("${tag}:sonarqube", "--target build_stage")
@@ -199,7 +203,7 @@ def call(Map config) {
                   //withSonarQubeEnv('SonarQubeServer') {
                     sh """
                     mvn ${packageArgs} package sonar:sonar \
-                      -Dsonar.host.url=http://192.168.30.26:9000 \
+                      -Dsonar.host.url=http://devops-sonarqube-sonarqube:9000 \
                       ${sonarExtendsParams}
                     """
                   //}
@@ -315,12 +319,11 @@ def call(Map config) {
             }
           }
 
-          // container('kubectl') {
-          //   withKubeConfig([credentialsId: 'kubeconfig-prod']) {
-          //     sh "kubectl set image ${deploymentName} ${containerName}=${tag}:prod-${timeFlag} --namespace=${deployNamespace}"
-          //   }
-          // }
-
+          container('kubectl') {
+            withKubeConfig([credentialsId: 'kubeconfig-prod']) {
+              sh "kubectl set image ${deploymentName} ${containerName}=${tag}:prod-${timeFlag} --namespace=${deployNamespace}"
+            }
+          }
         }
       }
     }
