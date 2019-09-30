@@ -78,9 +78,10 @@ def call(Map config) {
       - name: docker-sock
         hostPath:
           path: /var/run/docker.sock
-      - name: workspace-volume
-        hostPath:
-          path: /var/jenkins
+      - persistentVolumeClaim:
+          claimName: "cce-sfs-devops-jenkins"
+          mountPath: "/home/jenkins/workspace"
+          readOnly: false
   """
       }
     }
