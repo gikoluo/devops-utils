@@ -78,7 +78,9 @@ def call(Map config) {
       - name: docker-sock
         hostPath:
           path: /var/run/docker.sock
-
+      - name: workspace-volume
+        hostPath:
+          path: /var/jenkins_home
   """
       }
     }
