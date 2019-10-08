@@ -63,10 +63,6 @@ def call(Map config) {
       volumeMounts:
         - mountPath: /var/run/docker.sock
           name: docker-sock
-        - mountPath: /root/.m2
-          name: m2-cache
-
-        
     - name: sonar
       image: newtmitch/sonar-scanner
       command:
@@ -82,11 +78,8 @@ def call(Map config) {
         hostPath:
           path: /var/run/docker.sock
       - name: workspace-volume
-        hostPath:
-          path: /var/jenkins_home
-      - name: m2-cache
-        hostPath:
-          path: /var/jenkins_home/.m2
+        persistentVolumeClaim:
+          claimName: cce-sfs-devops-jenkins
   """
       }
     }
