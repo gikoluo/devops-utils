@@ -54,8 +54,8 @@ def call(Map config) {
     // }
     //stages {
       stage('Init') {
-        steps {
-          script {
+        // steps {
+          // script {
             // def checkoutResults = checkout scm: scm, poll: false, changelog: false
 
             // echo 'checkout results' + checkoutResults.toString()
@@ -82,7 +82,7 @@ def call(Map config) {
             imageName = "${projectName}-${serviceName}"
             // version = readFile('commit').trim()
             tag = "${namespace}/${org}/${imageName}"
-          }
+          // }
 
           container('docker') {
             withCredentials([[$class: 'UsernamePasswordMultiBinding',
@@ -103,7 +103,7 @@ def call(Map config) {
           // }
 
           
-        }
+        // }
       }
 
       stage('Build image') {
