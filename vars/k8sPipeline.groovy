@@ -37,57 +37,22 @@ def call(Map config) {
       enableQA = !! env.ENABLE_QA
   }
 
+  podTemplate(cloud: 'kubernetes', containers: [
+    containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
+    containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.14.6', command: 'cat', ttyEnabled: true),
+    containerTemplate(name: 'sonar', image: 'newtmitch/sonar-scanner', command: 'cat', ttyEnabled: true)
+  ],
+  volumes: [
+    hostPathVolume(mountPath: '/home/jenkins/.m2', hostPath: '/root/.m2'),
+    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
+  ]) {
 
-  pipeline {
-    agent {
-      kubernetes {
-        // this label will be the prefix of the generated pod's name
-        //label '${projectName}-${serviceName}'
-        defaultContainer 'jnlp'
-        yaml """
-  apiVersion: v1
-  kind: Pod
-  metadata:
-    labels:
-      component: ci
-  spec:
-    containers:
-    - name: jnlp
-      image: 'jenkins/jnlp-slave:3.27-1-alpine'
-      args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
-    - name: docker
-      image: docker
-      command:
-      - cat
-      tty: true
-      volumeMounts:
-        - mountPath: /var/run/docker.sock
-          name: docker-sock
-    - name: sonar
-      image: newtmitch/sonar-scanner
-      command:
-      - cat
-      tty: true
-    - name: kubectl
-      image: lachlanevenson/k8s-kubectl:v1.14.6
-      command:
-        - cat
-      tty: true
-    volumes:
-      - name: docker-sock
-        hostPath:
-          path: /var/run/docker.sock
-      - name: workspace-volume
-        persistentVolumeClaim:
-          claimName: cce-sfs-devops-jenkins
-  """
-      }
-    }
+    node(POD_LABEL) {
 
     // options {
     //   // skipDefaultCheckout(true)
     // }
-    stages {
+    //stages {
       stage('Init') {
         steps {
           script {
