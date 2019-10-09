@@ -104,7 +104,7 @@ def call(Map config) {
             sh """
               docker rmi ${tag}:${version} ${tag}:build_stage || echo "clean up build tag"
             """
-            throw
+            throw exc
           }
 
           
@@ -245,6 +245,7 @@ def call(Map config) {
                   docker rmi ${tag}:uat-${timeFlag}
               """
             }
+            throw err
         }
 
         container('kubectl') {
