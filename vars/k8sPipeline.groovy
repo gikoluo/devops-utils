@@ -43,8 +43,9 @@ def call(Map config) {
     containerTemplate(name: 'sonar', image: 'newtmitch/sonar-scanner', command: 'cat', ttyEnabled: true)
   ],
   volumes: [
-    hostPathVolume(mountPath: '/home/jenkins/.m2', hostPath: '/root/.m2'),
-    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
+    // hostPathVolume(mountPath: '/home/jenkins/.m2', hostPath: '/root/.m2'),
+    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
+    persistentVolumeClaimWorkspaceVolume(readOnly: false, claimName: 'cce-sfs-devops-jenkins'),
   ]) {
 
     node(POD_LABEL) {
@@ -69,7 +70,7 @@ def call(Map config) {
 
             // version = checkoutResults.GIT_COMMIT || checkoutResults.SVN_REVISION
 
-            if (scm instanceof hudson.plugins.git.GitSCM) {
+            if (false && scm instanceof hudson.plugins.git.GitSCM) {
               sh 'git rev-parse HEAD > commit'
               
             }
@@ -110,9 +111,9 @@ def call(Map config) {
         steps {
           container('docker') {
             script {
-              versionImage = docker.build("${tag}:${version}")
-
               sourceImage = docker.build("${tag}:build_stage", "--target build_stage .")
+
+              versionImage = docker.build("${tag}:${version}")
             }
           }
         }
