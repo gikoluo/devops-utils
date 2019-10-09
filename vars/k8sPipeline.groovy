@@ -17,7 +17,7 @@ def call(Map config) {
   def namespace = "swr.cn-east-2.myhuaweicloud.com"
   def org = "greenland"
   def imageName
-  def version 
+  def version = 0
   def tag
   def archiveFlatName 
   def versionImage
@@ -252,6 +252,29 @@ def call(Map config) {
           withKubeConfig([credentialsId: 'kubeconfig-prod']) {
             sh "kubectl set image ${deploymentName} ${containerName}=${tag}:prod-${timeFlag} --namespace=${deployNamespace}"
           }
+        }
+      }
+
+      post {
+        always {
+            echo 'cleanup'
+            container('docker') {
+              sh """
+                  docker rmi ${tag}:${version} ${tag}:uat-${timeFlag} ${tag}:prod-${timeFlag} || echo "clean up finished"
+                  """
+            }
+        }
+        success {
+            echo 'I succeeeded!'
+        }
+        unstable {
+            echo 'I am unstable :/'
+        }
+        failure {
+            echo 'I failed :('
+        }
+        changed {
+            echo 'Things were different before...'
         }
       }
     }
