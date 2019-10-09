@@ -95,9 +95,19 @@ def call(Map config) {
 
       stage('Build image') {
         container('docker') {
-          sourceImage = docker.build("${tag}:build_stage", "--target build_stage .")
+          try {
+              sourceImage = docker.build("${tag}:build_stage", "--target build_stage .")
 
-          versionImage = docker.build("${tag}:${version}")
+              versionImage = docker.build("${tag}:${version}")
+          }
+          catch (exc) {
+            sh """
+              docker rmi ${tag}:${version} ${tag}:build_stage || echo "clean up build tag"
+            """
+            throw
+          }
+
+          
         }
       }
 
@@ -221,11 +231,20 @@ def call(Map config) {
           sh """
               docker tag ${tag}:${version} ${tag}:uat-${timeFlag}
               docker push ${tag}:uat-${timeFlag}
+              docker rmi ${tag}:${version}
               """
         }
-        timeout(time:1, unit:'DAYS') {
-          def submitter = "test,sa,scm,publisher"
-          input message: "可以发布 UAT 了吗?", ok: '可以了，发布！', submitter: submitter
+        try {
+          timeout(time:1, unit:'DAYS') {
+            def submitter = "test,sa,scm,publisher"
+            input message: "可以发布 UAT 了吗?", ok: '可以了，发布！', submitter: submitter
+          }
+        } catch(err) { // timeout reached or input false
+            container('docker') {
+              sh """
+                  docker rmi ${tag}:uat-${timeFlag}
+              """
+            }
         }
 
         container('kubectl') {
@@ -241,6 +260,7 @@ def call(Map config) {
           sh """
               docker tag ${tag}:uat-${timeFlag} ${tag}:prod-${timeFlag}
               docker push ${tag}:prod-${timeFlag}
+              docker rmi ${tag}:uat-${timeFlag} ${tag}:prod-${timeFlag}
               """
         }
         timeout(time:1, unit:'DAYS') {
