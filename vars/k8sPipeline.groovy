@@ -43,7 +43,7 @@ def call(Map config) {
     containers: [
       containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
       containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.14.6', command: 'cat', ttyEnabled: true),
-      containerTemplate(name: 'sonar', image: 'newtmitch/sonar-scanner', command: 'cat', ttyEnabled: true)
+      //containerTemplate(name: 'sonar', image: 'newtmitch/sonar-scanner', command: 'cat', ttyEnabled: true)
     ],
     volumes: [
       // hostPathVolume(mountPath: '/home/jenkins/.m2', hostPath: '/root/.m2'),
