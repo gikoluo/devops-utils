@@ -262,7 +262,7 @@ def call(Map config) {
           sh """
               docker tag ${tag}:uat-${timeFlag} ${tag}:prod-${timeFlag}
               docker push ${tag}:prod-${timeFlag}
-              docker rmi ${tag}:uat-${timeFlag} ${tag}:prod-${timeFlag}
+              #docker rmi ${tag}:uat-${timeFlag} ${tag}:prod-${timeFlag}
               """
         }
         timeout(time:1, unit:'DAYS') {
