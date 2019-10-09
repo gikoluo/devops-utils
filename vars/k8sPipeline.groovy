@@ -37,16 +37,18 @@ def call(Map config) {
       enableQA = !! env.ENABLE_QA
   }
 
-  podTemplate(cloud: 'kubernetes', containers: [
-    containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
-    containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.14.6', command: 'cat', ttyEnabled: true),
-    containerTemplate(name: 'sonar', image: 'newtmitch/sonar-scanner', command: 'cat', ttyEnabled: true)
-  ],
-  volumes: [
-    // hostPathVolume(mountPath: '/home/jenkins/.m2', hostPath: '/root/.m2'),
-    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
-  ],
-  workspaceVolume: persistentVolumeClaimWorkspaceVolume(readOnly: false, claimName: 'cce-sfs-devops-jenkins')
+  podTemplate(
+    cloud: 'kubernetes', 
+    workspaceVolume: persistentVolumeClaimWorkspaceVolume(readOnly: false, claimName: 'cce-sfs-devops-jenkins'),
+    containers: [
+      containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
+      containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.14.6', command: 'cat', ttyEnabled: true),
+      containerTemplate(name: 'sonar', image: 'newtmitch/sonar-scanner', command: 'cat', ttyEnabled: true)
+    ],
+    volumes: [
+      // hostPathVolume(mountPath: '/home/jenkins/.m2', hostPath: '/root/.m2'),
+      hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
+    ]
   ) {
 
     node(POD_LABEL) {
