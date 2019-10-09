@@ -60,7 +60,7 @@ def call(Map config) {
       stage('Init') {
         // steps {
           // script {
-            // def checkoutResults = checkout scm: scm, poll: false, changelog: false
+            def checkoutResults = checkout scm: scm, poll: false, changelog: false
 
             // echo 'checkout results' + checkoutResults.toString()
             // echo 'checkout revision' + checkoutResults['SVN_REVISION']
