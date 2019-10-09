@@ -73,7 +73,7 @@ def call(Map config) {
 
             // version = checkoutResults.GIT_COMMIT || checkoutResults.SVN_REVISION
 
-            if (false && scm instanceof hudson.plugins.git.GitSCM) {
+            if (scm instanceof hudson.plugins.git.GitSCM) {
               sh 'git rev-parse HEAD > commit'
               
             }
