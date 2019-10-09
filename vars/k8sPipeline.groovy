@@ -102,7 +102,8 @@ def call(Map config) {
           }
           catch (exc) {
             sh """
-              docker rmi ${tag}:${version} ${tag}:build_stage || echo "clean up build tag"
+              docker rmi ${tag}:${version}  || echo "clean up build tag"  #${tag}:build_stage
+
             """
             throw exc
           }
