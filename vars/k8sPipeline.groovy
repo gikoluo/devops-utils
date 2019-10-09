@@ -45,8 +45,9 @@ def call(Map config) {
   volumes: [
     // hostPathVolume(mountPath: '/home/jenkins/.m2', hostPath: '/root/.m2'),
     hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
-    persistentVolumeClaimWorkspaceVolume(readOnly: false, claimName: 'cce-sfs-devops-jenkins'),
-  ]) {
+  ],
+  workspaceVolume: persistentVolumeClaimWorkspaceVolume(readOnly: false, claimName: 'cce-sfs-devops-jenkins')
+  ) {
 
     node(POD_LABEL) {
 
