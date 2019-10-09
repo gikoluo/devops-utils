@@ -255,28 +255,28 @@ def call(Map config) {
         }
       }
 
-      post {
-        always {
-            echo 'cleanup'
-            container('docker') {
-              sh """
-                  docker rmi ${tag}:${version} ${tag}:uat-${timeFlag} ${tag}:prod-${timeFlag} || echo "clean up finished"
-                  """
-            }
-        }
-        success {
-            echo 'I succeeeded!'
-        }
-        unstable {
-            echo 'I am unstable :/'
-        }
-        failure {
-            echo 'I failed :('
-        }
-        changed {
-            echo 'Things were different before...'
-        }
-      }
+      // post {
+      //   always {
+      //       echo 'cleanup'
+      //       container('docker') {
+      //         sh """
+      //             docker rmi ${tag}:${version} ${tag}:uat-${timeFlag} ${tag}:prod-${timeFlag} || echo "clean up finished"
+      //             """
+      //       }
+      //   }
+      //   success {
+      //       echo 'I succeeeded!'
+      //   }
+      //   unstable {
+      //       echo 'I am unstable :/'
+      //   }
+      //   failure {
+      //       echo 'I failed :('
+      //   }
+      //   changed {
+      //       echo 'Things were different before...'
+      //   }
+      // }
     }
   }
 }
