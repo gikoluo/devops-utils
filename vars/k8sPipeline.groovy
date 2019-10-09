@@ -208,7 +208,7 @@ def call(Map config) {
               ).trim()
 
               sh "cp \${ARCHIVE_FILE} ${WORKSPACE}/${archiveFlatName}"
-              archiveArtifacts "${ARCHIVE_FILE}"
+              archiveArtifacts "${archiveFlatName}"
               sh "rm ${WORKSPACE}/${archiveFlatName}"
             }
           }
