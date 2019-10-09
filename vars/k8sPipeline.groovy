@@ -37,64 +37,30 @@ def call(Map config) {
       enableQA = !! env.ENABLE_QA
   }
 
+  podTemplate(
+    cloud: 'kubernetes', 
+    workspaceVolume: persistentVolumeClaimWorkspaceVolume(readOnly: false, claimName: 'cce-sfs-devops-jenkins'),
+    containers: [
+      containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
+      containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.14.6', command: 'cat', ttyEnabled: true),
+      containerTemplate(name: 'sonar', image: 'newtmitch/sonar-scanner', command: 'cat', ttyEnabled: true)
+    ],
+    volumes: [
+      // hostPathVolume(mountPath: '/home/jenkins/.m2', hostPath: '/root/.m2'),
+      hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
+    ]
+  ) {
 
-  pipeline {
-    agent {
-      kubernetes {
-        // this label will be the prefix of the generated pod's name
-        //label '${projectName}-${serviceName}'
-        defaultContainer 'jnlp'
-        workspaceVolume {
-          persistentVolumeClaimWorkspaceVolume {
-            readOnly false
-            claimName 'cce-sfs-devops-jenkins'
-          }
-        }
-        yaml """
-  apiVersion: v1
-  kind: Pod
-  metadata:
-    labels:
-      component: ci
-  spec:
-    containers:
-    - name: jnlp
-      image: 'jenkins/jnlp-slave:3.27-1-alpine'
-      args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
-    - name: docker
-      image: docker
-      command:
-      - cat
-      tty: true
-      volumeMounts:
-        - mountPath: /var/run/docker.sock
-          name: docker-sock
-    - name: sonar
-      image: newtmitch/sonar-scanner
-      command:
-      - cat
-      tty: true
-    - name: kubectl
-      image: lachlanevenson/k8s-kubectl:v1.14.6
-      command:
-        - cat
-      tty: true
-    volumes:
-      - name: docker-sock
-        hostPath:
-          path: /var/run/docker.sock
-  """
-      }
-    }
+    node(POD_LABEL) {
 
     // options {
     //   // skipDefaultCheckout(true)
     // }
-    stages {
+    //stages {
       stage('Init') {
-        steps {
-          script {
-            // def checkoutResults = checkout scm: scm, poll: false, changelog: false
+        // steps {
+          // script {
+            def checkoutResults = checkout scm: scm, poll: false, changelog: false
 
             // echo 'checkout results' + checkoutResults.toString()
             // echo 'checkout revision' + checkoutResults['SVN_REVISION']
@@ -120,7 +86,7 @@ def call(Map config) {
             imageName = "${projectName}-${serviceName}"
             // version = readFile('commit').trim()
             tag = "${namespace}/${org}/${imageName}"
-          }
+          // }
 
           container('docker') {
             withCredentials([[$class: 'UsernamePasswordMultiBinding',
@@ -141,19 +107,19 @@ def call(Map config) {
           // }
 
           
-        }
+        // }
       }
 
       stage('Build image') {
-        steps {
+        // steps {
           container('docker') {
-            script {
-              versionImage = docker.build("${tag}:${version}")
-
+            // script {
               sourceImage = docker.build("${tag}:build_stage", "--target build_stage .")
-            }
+
+              versionImage = docker.build("${tag}:${version}")
+            // }
           }
-        }
+        // }
       }
 
       // stage('Prepare Configmaps') {
@@ -191,10 +157,10 @@ def call(Map config) {
 
 
       stage('SonarQube analysis') {
-        steps {
+        // steps {
           container('docker') {
             echo "Run SonarQube Analysis"
-            script {
+            // script {
               if( enableQA.toBoolean() ) {
                 //docker run -ti -v $(pwd):/root/src --entrypoint='' newtmitch/sonar-scanner sonar-scanner -Dsonar.host.url=http://docker.for.mac.host.internal:9000 -X
                 //def image = docker.image("nikhuber/sonar-scanner:latest")
@@ -243,16 +209,16 @@ def call(Map config) {
               else {
                 echo "Skipped QA."
               }
-            }
+            // }
           }
-        }
+        // }
       }
 
       stage('Archive Target File & push image') {
-        steps {
+        // steps {
           container('docker') {
             echo "Extract the Archive File"
-            script {
+            // script {
               sourceImage.inside {
                 sh "env"
                 archiveFile = sh (
@@ -273,15 +239,15 @@ def call(Map config) {
                 }
               }
               versionImage.push()
-            }
+            // }
           }
-        }
+        // }
       }
 
       
 
       stage('Deploy To UAT') {
-        steps {
+        // steps {
           container('docker') {
             sh """
                 docker tag ${tag}:${version} ${tag}:uat-${timeFlag}
@@ -289,12 +255,12 @@ def call(Map config) {
                 """
           }
 
-          script {
+          // script {
             timeout(time:1, unit:'DAYS') {
               def submitter = "test,sa,scm,publisher"
               input message: "可以发布 UAT 了吗?", ok: '可以了，发布！', submitter: submitter
             }
-          }
+          // }
 
 
           container('kubectl') {
@@ -302,31 +268,31 @@ def call(Map config) {
               sh "kubectl set image ${deploymentName} ${containerName}=${tag}:uat-${timeFlag} --namespace=${deployNamespace}"
             }
           }
-        }
+        // }
       }
 
 
       stage('Deploy To Production') {
-        steps {
+        // steps {
           container('docker') {
             sh """
                 docker tag ${tag}:uat-${timeFlag} ${tag}:prod-${timeFlag}
                 docker push ${tag}:prod-${timeFlag}
                 """
           }
-          script {
+          // script {
             timeout(time:1, unit:'DAYS') {
               def submitter = "sa,scm,publisher"
               input message: "可以发布 PROD 了吗?", ok: '可以了，发布！', submitter: submitter
             }
-          }
+          // }
 
           container('kubectl') {
             withKubeConfig([credentialsId: 'kubeconfig-prod']) {
               sh "kubectl set image ${deploymentName} ${containerName}=${tag}:prod-${timeFlag} --namespace=${deployNamespace}"
             }
           }
-        }
+        // }
       }
     }
   }
