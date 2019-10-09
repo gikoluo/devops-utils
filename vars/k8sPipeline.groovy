@@ -207,9 +207,9 @@ def call(Map config) {
                   returnStdout: true
               ).trim()
 
-              //sh "cp \${ARCHIVE_FILE} ${WORKSPACE}/${archiveFlatName}"
+              sh "cp \${ARCHIVE_FILE} ${WORKSPACE}/${archiveFlatName}"
               archiveArtifacts "${ARCHIVE_FILE}"
-              //sh "rm ${WORKSPACE}/${archiveFlatName}"
+              sh "rm ${WORKSPACE}/${archiveFlatName}"
             }
           }
           versionImage.push()
