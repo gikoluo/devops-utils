@@ -54,9 +54,9 @@ def call(Map config) {
     node(POD_LABEL) {
 
       stage('Init') {
-        def checkoutResults = checkout scm: scm, poll: false, changelog: false
+        def checkoutResults = checkout scm: scm
 
-        echo 'checkout results' + checkoutResults.toString()
+        //echo 'checkout results' + checkoutResults.toString()
         // echo 'checkout revision' + checkoutResults['SVN_REVISION']
 
         // echo 'scm: ' + scm.toString()
