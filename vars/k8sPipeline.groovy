@@ -243,7 +243,9 @@ def call(Map config) {
 
           if ( ! (env.BRANCH_NAME == "trunk" || env.BRANCH_NAME == "master" ) ) {
             echo "The lifecycle of branches is teminaled in TEST."
-            exit 0
+            echo '[FAILURE] Failed to build'
+            currentBuild.result = 'SUCCESS'
+            return
           } 
         }
         else {
