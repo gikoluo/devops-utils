@@ -107,8 +107,6 @@ def call(Map config) {
             """
             throw exc
           }
-
-          
         }
       }
 
@@ -224,6 +222,27 @@ def call(Map config) {
             }
           }
           versionImage.push()
+        }
+      }
+
+      stage('Deploy To Test') {
+        container('docker') {
+          sh """
+              docker tag ${tag}:${version} ${tag}-test:test-${timeFlag}
+              docker push ${tag}-test:test-${timeFlag}
+              """
+        }
+
+        container('kubectl') {
+          withKubeConfig([credentialsId: 'kubeconfig-uat']) {  //USE UAT cluster in test Enviroment, seperate by namespace
+            sh "kubectl set image ${deploymentName} ${containerName}=${tag}-test:test-${timeFlag} --namespace=${deployNamespace}-test"
+          }
+          echo "The service is Deployed in TEST"
+        }
+
+        if ( ! (env.BRANCH_NAME == "trunk" || env.BRANCH_NAME == "master" )) {
+          echo "The lifecycle of branches is teminaled in TEST."
+          return
         }
       }
 
