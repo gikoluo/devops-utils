@@ -240,17 +240,17 @@ def call(Map config) {
             }
             echo "The service is Deployed in TEST"
           }
-
-          if ( ! (env.BRANCH_NAME == "trunk" || env.BRANCH_NAME == "master" ) ) {
-            echo "The lifecycle of branches is teminaled in TEST."
-            echo '[FAILURE] Failed to build'
-            currentBuild.result = 'SUCCESS'
-            return
-          } 
         }
         else {
           echo "SKIP TEST."
         }
+      }
+
+      if ( ! (env.BRANCH_NAME == "" || env.BRANCH_NAME == "trunk" || env.BRANCH_NAME == "master" ) ) {
+        echo "The lifecycle of branches is teminaled in TEST."
+        echo '[FAILURE] Failed to build'
+        currentBuild.result = 'SUCCESS'
+        return
       }
 
       stage('Deploy To UAT') {
