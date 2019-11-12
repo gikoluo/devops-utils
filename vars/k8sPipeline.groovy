@@ -243,7 +243,7 @@ def call(Map config) {
 
           if ( ! (env.BRANCH_NAME == "trunk" || env.BRANCH_NAME == "master" ) ) {
             echo "The lifecycle of branches is teminaled in TEST."
-            return
+            exit 0
           } 
         }
         else {
