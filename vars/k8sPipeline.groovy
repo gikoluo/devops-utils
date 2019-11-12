@@ -4,7 +4,7 @@ def call(Map config) {
   def serviceName = config.SERVICE_NAME   //Service name. Usually it is the process name running in the server.
   //def archiveFile = config.ARCHIVE_FILE
   //def branchName = env.BRANCH_NAME     //Branch name. And the project must be multibranch pipeline, Or set the env in config
-  def branchName
+  def branchName = ""
   
   def deploymentName = config.DEPLOYMENT_NAME
   def containerName = config.CONTAINER_NAME
@@ -35,6 +35,10 @@ def call(Map config) {
 
   if( env.ENABLE_QA ) {
       enableQA = !! env.ENABLE_QA
+  }
+
+  if( env.BRANCH_NAME ) {
+      branchName = env.BRANCH_NAME
   }
 
   podTemplate(
@@ -246,12 +250,12 @@ def call(Map config) {
         }
       }
 
-      if ( ! (env.BRANCH_NAME == "" || env.BRANCH_NAME == "trunk" || env.BRANCH_NAME == "master" ) ) {
+      if ( ! (branchName == "" || branchName == "trunk" || branchName == "master" ) ) {
         echo "The lifecycle of branches is teminaled in TEST."
         echo '[FAILURE] Failed to build'
         currentBuild.result = 'SUCCESS'
         return
-      }
+      } 
 
       stage('Deploy To UAT') {
         container('docker') {
