@@ -33,8 +33,8 @@ def call(Map config) {
       sonarExtendsParams = env.SONAR_EXTENDS_PARAMS
   }
 
-  if( env.ENABLE_QA ) {
-      enableQA = !! env.ENABLE_QA
+  if( config.ENABLE_QA ) {
+      enableQA = config.ENABLE_QA.toBoolean()
   }
 
   if( env.BRANCH_NAME ) {
@@ -151,7 +151,7 @@ def call(Map config) {
       stage('SonarQube analysis') {
         container('docker') {
           echo "Run SonarQube Analysis"
-          if( enableQA.toBoolean() ) {
+          if( enableQA ) {
             //docker run -ti -v $(pwd):/root/src --entrypoint='' newtmitch/sonar-scanner sonar-scanner -Dsonar.host.url=http://docker.for.mac.host.internal:9000 -X
             //def image = docker.image("nikhuber/sonar-scanner:latest")
             //def image = docker.build("${tag}:sonarqube", "--target build_stage")
