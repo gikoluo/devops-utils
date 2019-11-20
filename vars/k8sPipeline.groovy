@@ -149,11 +149,12 @@ def call(Map config) {
 
 
       stage('SonarQube analysis') {
+        environment {
+            SONAR_QUBE_SERVER = credentials('sonar-qube-server')
+        }
         container('docker') {
           echo "Run SonarQube Analysis"
-          environment {
-              SONAR_QUBE_SERVER = credentials('sonar-qube-server')
-          }
+          
           if( enableQA ) {
             //docker run -ti -v $(pwd):/root/src --entrypoint='' newtmitch/sonar-scanner sonar-scanner -Dsonar.host.url=http://docker.for.mac.host.internal:9000 -X
             //def image = docker.image("nikhuber/sonar-scanner:latest")
