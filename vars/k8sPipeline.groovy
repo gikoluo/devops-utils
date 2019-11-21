@@ -58,9 +58,6 @@ def call(Map config) {
   ) {
 
     node(POD_LABEL) {
-
-      
-
       stage('Init') {
         def checkoutResults = checkout scm: scm
 
@@ -172,7 +169,7 @@ def call(Map config) {
                 sh "env"
 
                 sh """
-                mvn ${packageArgs} ${SONAR_MAVEN_GOAL} \
+                mvn ${packageArgs} package ${SONAR_MAVEN_GOAL} \
                   -Dsonar.host.url=${SONAR_HOST_URL} \
                   -Dsonar.sourceEncoding=UTF-8
                 """
