@@ -27,13 +27,13 @@ def call(Map config) {
   def packageArgs = " -Dmaven.test.skip=true"
   def timeFlag = new Date().format("yyyyMMdd-hhmm")
 
-  def sonarExtendsParams = "" // -Dsonar.sources=./src/main/java/ -Dsonar.java.binaries=./target/classes
+  def sonarExtendsParams = "-Dsonar.sources=./src/main/java/ -Dsonar.java.binaries=./target/classes"
 
   if(env.SONAR_EXTENDS_PARAMS) {
       sonarExtendsParams = env.SONAR_EXTENDS_PARAMS
   }
 
-  if( config.ENABLE_QA ) {
+  if( env.ENABLE_QA ) {
       enableQA = config.ENABLE_QA.toBoolean()
   }
 
@@ -151,7 +151,6 @@ def call(Map config) {
       stage('SonarQube analysis') {
         container('docker') {
           echo "Run SonarQube Analysis"
-          
           if( enableQA ) {
             //docker run -ti -v $(pwd):/root/src --entrypoint='' newtmitch/sonar-scanner sonar-scanner -Dsonar.host.url=http://docker.for.mac.host.internal:9000 -X
             //def image = docker.image("nikhuber/sonar-scanner:latest")
@@ -164,7 +163,7 @@ def call(Map config) {
                 mvn ${packageArgs} ${env.SONAR_MAVEN_GOAL} \
                   -Dsonar.host.url=${env.SONAR_HOST_URL}
                 """
-              //}
+              }
             }
             //def scannerHome = tool 'SonarScanner 4.0';
             // image.inside {
