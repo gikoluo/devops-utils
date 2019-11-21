@@ -161,13 +161,14 @@ def call(Map config) {
             //def image = docker.build("${tag}:sonarqube", "--target build_stage")
             sourceImage.inside {
               //sh "sonar-scanner -Dsonar.host.url=http://docker.for.mac.host.internal:9000 || echo 'Snoar scanner failed';"
-
-              //withSonarQubeEnv('SonarQubeServer') {
+              sh "echo SONAR_QUBE_SERVER=${env.SONAR_QUBE_SERVER}"
+              sh "echo SonarQubeServer=${env.SonarQubeServer}"
+              
+              withSonarQubeEnv('SonarQubeServer') {
                 sh """
-                mvn ${packageArgs} package sonar:sonar \
-                  -Dsonar.host.url=${env.SONAR_QUBE_SERVER}
+                mvn ${packageArgs} package sonar:sonar
                 """
-              //}
+              }
             }
             //def scannerHome = tool 'SonarScanner 4.0';
             // image.inside {
