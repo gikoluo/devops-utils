@@ -165,8 +165,7 @@ def call(Map config) {
               //withSonarQubeEnv('SonarQubeServer') {
                 sh """
                 mvn ${packageArgs} package sonar:sonar \
-                  -Dsonar.host.url=${env.SONAR_QUBE_SERVER} \
-                  ${sonarExtendsParams}
+                  -Dsonar.host.url=${env.SONAR_QUBE_SERVER}
                 """
               //}
             }
