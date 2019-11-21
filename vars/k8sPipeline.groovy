@@ -148,23 +148,23 @@ def call(Map config) {
 
 
       stage('SonarQube analysis') {
-        sourceImage.inside {
-          container('docker') {
-            echo "Run SonarQube Analysis"
-            if( enableQA ) {
-              //docker run -ti -v $(pwd):/root/src --entrypoint='' newtmitch/sonar-scanner sonar-scanner -Dsonar.host.url=http://docker.for.mac.host.internal:9000 -X
-              //def image = docker.image("nikhuber/sonar-scanner:latest")
-              //def image = docker.build("${tag}:sonarqube", "--target build_stage")
-              
+        container('docker') {
+          echo "Run SonarQube Analysis"
+          if( enableQA ) {
+            //docker run -ti -v $(pwd):/root/src --entrypoint='' newtmitch/sonar-scanner sonar-scanner -Dsonar.host.url=http://docker.for.mac.host.internal:9000 -X
+            //def image = docker.image("nikhuber/sonar-scanner:latest")
+            //def image = docker.build("${tag}:sonarqube", "--target build_stage")
+            withSonarQubeEnv('SonarQubeServer') {
+              sourceImage.inside {
                 //sh "sonar-scanner -Dsonar.host.url=http://docker.for.mac.host.internal:9000 || echo 'Snoar scanner failed';"
-
-                withSonarQubeEnv('SonarQubeServer') {
-                  sh """
-                  mvn ${packageArgs} ${env.SONAR_MAVEN_GOAL} \
-                    -Dsonar.host.url=${env.SONAR_HOST_URL}
-                  """
-                }
+                sh "env"
+                
+                sh """
+                mvn ${packageArgs} ${env.SONAR_MAVEN_GOAL} \
+                  -Dsonar.host.url=${env.SONAR_HOST_URL}
+                """
               }
+            }
             //def scannerHome = tool 'SonarScanner 4.0';
             // image.inside {
             //     sh 'make test'
