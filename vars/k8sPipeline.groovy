@@ -1,3 +1,5 @@
+import com.eclipsesource.json.Json;
+
 def call(Map config) {
   // Jenkinsfile
   def projectName = config.PROJECT_NAME   //Project name, Usually it is the name of jenkins project folder name.
@@ -158,7 +160,7 @@ def call(Map config) {
               sourceImage.inside {
                 //sh "sonar-scanner -Dsonar.host.url=http://docker.for.mac.host.internal:9000 || echo 'Snoar scanner failed';"
                 sh "env"
-                
+
                 sh """
                 mvn ${packageArgs} ${env.SONAR_MAVEN_GOAL} \
                   -Dsonar.host.url=${env.SONAR_HOST_URL}
