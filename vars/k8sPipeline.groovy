@@ -173,7 +173,8 @@ def call(Map config) {
 
                 sh """
                 mvn ${packageArgs} ${SONAR_MAVEN_GOAL} \
-                  -Dsonar.host.url=${SONAR_HOST_URL}
+                  -Dsonar.host.url=${SONAR_HOST_URL} \
+                  -Dsonar.sourceEncoding=UTF-8
                 """
               }
             // }
