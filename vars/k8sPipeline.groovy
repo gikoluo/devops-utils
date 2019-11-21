@@ -33,7 +33,7 @@ def call(Map config) {
       sonarExtendsParams = env.SONAR_EXTENDS_PARAMS
   }
 
-  if( env.ENABLE_QA ) {
+  if( config.ENABLE_QA ) {
       enableQA = config.ENABLE_QA.toBoolean()
   }
 
