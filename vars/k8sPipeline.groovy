@@ -27,7 +27,7 @@ def call(Map config) {
   def packageArgs = " -Dmaven.test.skip=true"
   def timeFlag = new Date().format("yyyyMMdd-hhmm")
 
-  def sonarExtendsParams = "-Dsonar.sources=./src/main/java/ -Dsonar.java.binaries=./target/classes"
+  def sonarExtendsParams = "" // -Dsonar.sources=./src/main/java/ -Dsonar.java.binaries=./target/classes
 
   if(env.SONAR_EXTENDS_PARAMS) {
       sonarExtendsParams = env.SONAR_EXTENDS_PARAMS
