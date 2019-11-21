@@ -1,5 +1,3 @@
-import com.eclipsesource.json.Json;
-
 def call(Map config) {
   // Jenkinsfile
   def projectName = config.PROJECT_NAME   //Project name, Usually it is the name of jenkins project folder name.
@@ -28,6 +26,8 @@ def call(Map config) {
   def envs = ['common']
   def packageArgs = " -Dmaven.test.skip=true"
   def timeFlag = new Date().format("yyyyMMdd-hhmm")
+
+
 
   def sonarExtendsParams = "-Dsonar.sources=./src/main/java/ -Dsonar.java.binaries=./target/classes"
 
@@ -58,6 +58,8 @@ def call(Map config) {
   ) {
 
     node(POD_LABEL) {
+
+      
 
       stage('Init') {
         def checkoutResults = checkout scm: scm
@@ -153,20 +155,28 @@ def call(Map config) {
         container('docker') {
           echo "Run SonarQube Analysis"
           if( enableQA ) {
+            def SONAR_MAVEN_GOAL
+            def SONAR_HOST_URL
+
+            withSonarQubeEnv('SonarQubeServer') {
+              SONAR_MAVEN_GOAL = env.SONAR_MAVEN_GOAL
+              SONAR_HOST_URL = env.SONAR_HOST_URL
+            }
+
             //docker run -ti -v $(pwd):/root/src --entrypoint='' newtmitch/sonar-scanner sonar-scanner -Dsonar.host.url=http://docker.for.mac.host.internal:9000 -X
             //def image = docker.image("nikhuber/sonar-scanner:latest")
             //def image = docker.build("${tag}:sonarqube", "--target build_stage")
-            withSonarQubeEnv('SonarQubeServer') {
+            // withSonarQubeEnv('SonarQubeServer') {
               sourceImage.inside {
                 //sh "sonar-scanner -Dsonar.host.url=http://docker.for.mac.host.internal:9000 || echo 'Snoar scanner failed';"
                 sh "env"
 
                 sh """
-                mvn ${packageArgs} ${env.SONAR_MAVEN_GOAL} \
-                  -Dsonar.host.url=${env.SONAR_HOST_URL}
+                mvn ${packageArgs} ${SONAR_MAVEN_GOAL} \
+                  -Dsonar.host.url=${SONAR_HOST_URL}
                 """
               }
-            }
+            // }
             //def scannerHome = tool 'SonarScanner 4.0';
             // image.inside {
             //     sh 'make test'
