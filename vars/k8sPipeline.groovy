@@ -149,9 +149,6 @@ def call(Map config) {
 
 
       stage('SonarQube analysis') {
-        environment {
-            SONAR_QUBE_SERVER = credentials('sonar-qube-server')
-        }
         container('docker') {
           echo "Run SonarQube Analysis"
           
@@ -161,16 +158,13 @@ def call(Map config) {
             //def image = docker.build("${tag}:sonarqube", "--target build_stage")
             sourceImage.inside {
               //sh "sonar-scanner -Dsonar.host.url=http://docker.for.mac.host.internal:9000 || echo 'Snoar scanner failed';"
-              sh "echo SONAR_QUBE_SERVER=${env.SONAR_QUBE_SERVER}"
-              sh "echo SonarQubeServer=${env.SonarQubeServer}"
 
               withSonarQubeEnv('SonarQubeServer') {
-                sh "env"
-                
                 sh """
-                mvn ${packageArgs} package sonar:sonar
+                mvn ${packageArgs} ${env.SONAR_MAVEN_GOAL} \
+                  -Dsonar.host.url=${env.SONAR_HOST_URL}
                 """
-              }
+              //}
             }
             //def scannerHome = tool 'SonarScanner 4.0';
             // image.inside {
