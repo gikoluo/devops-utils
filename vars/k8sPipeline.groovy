@@ -107,7 +107,6 @@ def call(Map config) {
           catch (exc) {
             sh """
               docker rmi ${tag}:${version}  || echo "clean up build tag"  #${tag}:build_stage
-
             """
             throw exc
           }
@@ -149,22 +148,23 @@ def call(Map config) {
 
 
       stage('SonarQube analysis') {
-        container('docker') {
-          echo "Run SonarQube Analysis"
-          if( enableQA ) {
-            //docker run -ti -v $(pwd):/root/src --entrypoint='' newtmitch/sonar-scanner sonar-scanner -Dsonar.host.url=http://docker.for.mac.host.internal:9000 -X
-            //def image = docker.image("nikhuber/sonar-scanner:latest")
-            //def image = docker.build("${tag}:sonarqube", "--target build_stage")
-            sourceImage.inside {
-              //sh "sonar-scanner -Dsonar.host.url=http://docker.for.mac.host.internal:9000 || echo 'Snoar scanner failed';"
+        sourceImage.inside {
+          container('docker') {
+            echo "Run SonarQube Analysis"
+            if( enableQA ) {
+              //docker run -ti -v $(pwd):/root/src --entrypoint='' newtmitch/sonar-scanner sonar-scanner -Dsonar.host.url=http://docker.for.mac.host.internal:9000 -X
+              //def image = docker.image("nikhuber/sonar-scanner:latest")
+              //def image = docker.build("${tag}:sonarqube", "--target build_stage")
+              
+                //sh "sonar-scanner -Dsonar.host.url=http://docker.for.mac.host.internal:9000 || echo 'Snoar scanner failed';"
 
-              withSonarQubeEnv('SonarQubeServer') {
-                sh """
-                mvn ${packageArgs} ${env.SONAR_MAVEN_GOAL} \
-                  -Dsonar.host.url=${env.SONAR_HOST_URL}
-                """
+                withSonarQubeEnv('SonarQubeServer') {
+                  sh """
+                  mvn ${packageArgs} ${env.SONAR_MAVEN_GOAL} \
+                    -Dsonar.host.url=${env.SONAR_HOST_URL}
+                  """
+                }
               }
-            }
             //def scannerHome = tool 'SonarScanner 4.0';
             // image.inside {
             //     sh 'make test'
