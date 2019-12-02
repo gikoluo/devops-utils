@@ -259,12 +259,7 @@ def call(Map config) {
         }
       }
 
-      if ( ! (branchName == "" || branchName == "trunk" || branchName == "master" ) ) {
-        echo "The lifecycle of branches is teminaled in TEST."
-        echo '[FAILURE] Failed to build'
-        currentBuild.result = 'SUCCESS'
-        return
-      } 
+      
 
       stage('Deploy To UAT') {
         container('docker') {
@@ -293,6 +288,13 @@ def call(Map config) {
             sh "kubectl set image ${deploymentName} ${containerName}=${tag}:uat-${timeFlag} --namespace=${deployNamespace}"
           }
         }
+      }
+
+      if ( ! (branchName == "" || branchName == "trunk" || branchName == "master" ) ) {
+        echo "The lifecycle of branches is teminaled in TEST."
+        echo '[FAILURE] Failed to build'
+        currentBuild.result = 'SUCCESS'
+        return
       }
 
 
